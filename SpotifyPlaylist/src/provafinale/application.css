@@ -1,0 +1,20 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.tab-header-background {
+    -fx-background-color:  #191414;
+}
+
+.tab-label {
+-fx-text-fill: #191414;
+-fx-font-weight: bold;
+
+}
+
+.tab{
+-fx-background-color:   #1db954;
+-fx-font: 14px "American Typewriter";
+}
+
+.text-area .content {
+    -fx-background-color:  #191414 ;
+}
