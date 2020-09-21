@@ -23,7 +23,7 @@
    <center>
       <TabPane stylesheets="@application.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab closable="false" text="Ricerca brani">
+          <Tab fx:id="tabRicerca" closable="false" text="Ricerca brani">
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
@@ -43,7 +43,7 @@
                                        <children>
                                           <ImageView fitHeight="167.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@Spotify%20logo.png" />
+                                                <Image url="@../../img/Spotify%20logo.png" />
                                              </image>
                                              <HBox.margin>
                                                 <Insets />
@@ -65,7 +65,7 @@
                                                             <Font name="American Typewriter Bold" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField>
+                                                      <TextField fx:id="txtFieldArtista">
                                                          <HBox.margin>
                                                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                          </HBox.margin>
@@ -82,7 +82,7 @@
                                                             <Font name="American Typewriter Bold" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <ChoiceBox>
+                                                      <ChoiceBox fx:id="choiceBoxGenere">
                                                          <HBox.margin>
                                                             <Insets bottom="10.0" left="15.0" right="8.0" top="10.0" />
                                                          </HBox.margin>
@@ -94,12 +94,12 @@
                                                 </HBox>
                                                 <ButtonBar buttonMinWidth="0.0">
                                                   <buttons>
-                                                      <Button mnemonicParsing="false" style="-fx-background-color: #1DB954; -fx-font: &quot;American Typewriter&quot;;" text="Cancella">
+                                                      <Button fx:id="buttonCancella" mnemonicParsing="false" onAction="#doCancella" style="-fx-background-color: #1DB954; -fx-font: &quot;American Typewriter&quot;;" text="Cancella">
                                                          <font>
                                                             <Font name="American Typewriter" size="13.0" />
                                                          </font>
                                                       </Button>
-                                                    <Button mnemonicParsing="false" style="-fx-background-color: #1DB954;" text="Cerca">
+                                                    <Button fx:id="buttonCerca" mnemonicParsing="false" onAction="#doCerca" style="-fx-background-color: #1DB954;" text="Cerca">
                                                          <font>
                                                             <Font name="American Typewriter Bold" size="13.0" />
                                                          </font>
@@ -111,7 +111,7 @@
                                                 </ButtonBar>
                                              </children>
                                              <HBox.margin>
-                                                <Insets top="30.0" />
+                                                <Insets left="10.0" top="30.0" />
                                              </HBox.margin>
                                           </VBox>
                                        </children>
@@ -121,7 +121,7 @@
                                     <Insets top="30.0" />
                                  </VBox.margin>
                               </HBox>
-                              <TextArea editable="false" prefHeight="180.0" prefWidth="414.0" stylesheets="@application.css">
+                              <TextArea fx:id="txtAreaRicerca" editable="false" prefHeight="180.0" prefWidth="414.0" stylesheets="@application.css">
                                  <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="51.0" />
                                  </VBox.margin>
@@ -135,7 +135,7 @@
                   </AnchorPane>
                </content>
           </Tab>
-          <Tab closable="false" text="Genera playlist">
+          <Tab fx:id="tabGenera" closable="false" text="Genera playlist">
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="405.0">
                      <children>
@@ -154,7 +154,7 @@
                                        <children>
                                           <ImageView fitHeight="167.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@Spotify%20logo.png" />
+                                                <Image url="@../../img/Spotify%20logo.png" />
                                              </image>
                                           </ImageView>
                                        </children>
@@ -173,7 +173,7 @@
                                                             <Font name="American Typewriter Bold" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField prefHeight="28.0" prefWidth="61.0" />
+                                                      <TextField fx:id="txtFieldDurata" prefHeight="28.0" prefWidth="61.0" />
                                                    </children>
                                                    <VBox.margin>
                                                       <Insets left="20.0" right="20.0" top="20.0" />
@@ -189,7 +189,7 @@
                                                             <Font name="American Typewriter Bold" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <Slider>
+                                                      <Slider fx:id="sliderPopularity">
                                                          <HBox.margin>
                                                             <Insets left="13.0" />
                                                          </HBox.margin>
@@ -208,7 +208,7 @@
                                                             <Font name="American Typewriter Bold" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <Slider>
+                                                      <Slider fx:id="sliderEnergy">
                                                          <HBox.margin>
                                                             <Insets left="37.0" />
                                                          </HBox.margin>
@@ -219,7 +219,7 @@
                                                    </VBox.margin></HBox>
                                                 <HBox>
                                                    <children>
-                                                      <Label text="Danceability" textFill="#1db954">
+                                                      <Label fx:id="sliderDanceability" text="Danceability" textFill="#1db954">
                                                          <HBox.margin>
                                                             <Insets left="-5.0" right="10.0" />
                                                          </HBox.margin>
@@ -242,7 +242,7 @@
                                                             <Font name="American Typewriter Bold" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <RadioButton mnemonicParsing="false" text="Bassa" textFill="WHITE">
+                                                      <RadioButton fx:id="radioBassa" mnemonicParsing="false" text="Bassa" textFill="WHITE">
                                                          <font>
                                                             <Font name="American Typewriter Bold" size="13.0" />
                                                          </font>
@@ -250,7 +250,7 @@
                                                             <Insets right="5.0" />
                                                          </HBox.margin>
                                                       </RadioButton>
-                                                      <RadioButton mnemonicParsing="false" text="Alta" textFill="WHITE">
+                                                      <RadioButton fx:id="radioAlta" mnemonicParsing="false" text="Alta" textFill="WHITE">
                                                          <font>
                                                             <Font name="American Typewriter Bold" size="13.0" />
                                                          </font>
@@ -268,12 +268,12 @@
                               </HBox>
                               <ButtonBar stylesheets="@application.css">
                                 <buttons>
-                                    <Button mnemonicParsing="false" style="-fx-background-color: #1DB954;" text="Reset">
+                                    <Button fx:id="buttonReset" mnemonicParsing="false" onAction="#doReset" style="-fx-background-color: #1DB954;" text="Reset">
                                        <font>
                                           <Font name="American Typewriter" size="13.0" />
                                        </font>
                                     </Button>
-                                  <Button mnemonicParsing="false" style="-fx-background-color: #1DB954;" text="Genera">
+                                  <Button fx:id="buttonGenera" mnemonicParsing="false" onAction="#doGenera" style="-fx-background-color: #1DB954;" text="Genera">
                                        <font>
                                           <Font name="American Typewriter Bold" size="13.0" />
                                        </font>
@@ -286,7 +286,7 @@
                                     <Insets bottom="20.0" top="20.0" />
                                  </VBox.margin>
                               </ButtonBar>
-                              <TextArea editable="false" prefHeight="180.0" prefWidth="414.0">
+                              <TextArea fx:id="txtAreaGenera" editable="false" prefHeight="180.0" prefWidth="414.0">
                                  <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </VBox.margin>
@@ -307,3 +307,4 @@
       </TabPane>
    </center>
 </BorderPane>
+
