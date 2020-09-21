@@ -1,5 +1,6 @@
 package provafinale;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,7 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
@@ -32,6 +32,9 @@ public class SpotifyController {
 
     @FXML
     private ChoiceBox<String> choiceBoxGenere;
+    
+    @FXML
+    private ChoiceBox<Integer> choiceBoxAnno;
 
     @FXML
     private Button buttonCancella;
@@ -76,6 +79,7 @@ public class SpotifyController {
     void doCancella(ActionEvent event) {
     	txtFieldArtista.clear();
     	choiceBoxGenere.getSelectionModel().clearSelection();
+    	choiceBoxAnno.getSelectionModel().clearSelection();
     	txtAreaRicerca.clear();
     }
 
@@ -83,13 +87,65 @@ public class SpotifyController {
     void doCerca(ActionEvent event) {
     	txtAreaRicerca.clear();
     	String artista = txtFieldArtista.getText();
-    	List<Song> canzoniArtista = dao.getAllArtistSong(artista);
-    	if(canzoniArtista.isEmpty()) {
-    		txtAreaRicerca.setText("Nessuna canzone trovata per l'artista cercato");
-    	} else {
-    		for(Song s : canzoniArtista) {
-        		txtAreaRicerca.appendText(s.getTitle()+"\n");
+    	String genere = choiceBoxGenere.getSelectionModel().getSelectedItem();
+    	int anno = 0;
+    	try{
+    		anno = choiceBoxAnno.getSelectionModel().getSelectedItem();
+    	} catch(NullPointerException e) {
+    	}
+    	List<Song> canzoni = new ArrayList<>();
+    	
+    	if(!artista.equals("") && genere != null) {
+    		txtAreaRicerca.setText("E' possibile la ricerca per artista, per genere o per anno.\nE' inoltre possibile la ricerca per artista e anno  e per genere e anno.");
+    		return;
+    	}
+    	else if(!artista.equals("") && genere==null) {
+    		if(anno!=0) {
+    			canzoni = dao.getAllYearArtistSong(artista, anno);
+    		}
+    		else {
+    			canzoni = dao.getAllArtistSong(artista);
+    		}
+    		
+        	if(canzoni.isEmpty()) {
+        		txtAreaRicerca.setText("Nessuna canzone trovata per l'artista cercato");
+        	} else {
+        		for(Song s : canzoni) {
+            		txtAreaRicerca.appendText(s.getTitle()+" ("+s.getYear()+")\n");
+            	}
         	}
+    	} 
+    	
+    	else if (artista.equals("") && genere!=null) {
+    		if(anno!=0) {
+    			canzoni = dao.getAllYearGenreSongs(genere, anno);
+    		} else {
+    			canzoni = dao.getAllGenreSongs(genere);
+    		}
+    		if(canzoni.isEmpty()) {
+    			txtAreaRicerca.setText("Nessuna canzone di quel genere trovata per l'anno selezionato");
+    		}
+    		for(Song s : canzoni) {
+    			txtAreaRicerca.appendText(s.getArtist()+" - "+s.getTitle()+" ("+s.getYear()+")\n");
+    		}
+    	} else if(artista.equals("") && genere == null && anno!=0) {
+    		canzoni = dao.getAllYearSongs(anno);
+    		for(Song s : canzoni) {
+    			txtAreaRicerca.appendText(s.getArtist()+" - "+s.getTitle()+"\n");
+    		}
+    		
+    	}
+    	else if (artista.equals("") && genere == null && anno == 0) {
+    		txtAreaRicerca.setText("Inserire un artista o un genere o un anno da cercare");
+    	}
+    	try {
+    		txtAreaRicerca.appendText("\nCanzone più popolare: "+model.canzonePiuPopolare(canzoni).getTitle().toUpperCase()+"\n");
+    		int durataMedia = model.durataMedia(canzoni);
+    		int min = durataMedia/60;
+    		int sec = durataMedia%60;
+    		txtAreaRicerca.appendText("Durata media: "+min+" minuti e "+sec+" secondi");
+    	} catch(NullPointerException e) {
+    		
     	}
     	
     }
@@ -115,6 +171,7 @@ public class SpotifyController {
         assert tabRicerca != null : "fx:id=\"tabRicerca\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert txtFieldArtista != null : "fx:id=\"txtFieldArtista\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert choiceBoxGenere != null : "fx:id=\"choiceBoxGenere\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert choiceBoxAnno != null : "fx:id=\"choiceBoxAnno\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert buttonCancella != null : "fx:id=\"buttonCancella\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert buttonCerca != null : "fx:id=\"buttonCerca\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert txtAreaRicerca != null : "fx:id=\"txtAreaRicerca\" was not injected: check your FXML file 'Spotify.fxml'.";
@@ -134,10 +191,15 @@ public class SpotifyController {
     	sliderDanceability.setValue(50);
         
         dao = new SpotifyDAO();
+        model = new Model();
         ObservableList<String> generi = FXCollections.observableArrayList();
+        ObservableList<Integer> anni = FXCollections.observableArrayList();
         generi.addAll(dao.getAllGenres());
+        anni.addAll(dao.getAllYears());
         Collections.sort(generi);
+        Collections.sort(anni);
         choiceBoxGenere.setItems(generi);
+        choiceBoxAnno.setItems(anni);
     }
 
 }
