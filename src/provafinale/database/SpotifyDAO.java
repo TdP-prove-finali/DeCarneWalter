@@ -192,4 +192,64 @@ final String sql = "SELECT * FROM top10s WHERE artist = ? AND year = ?";
 			throw new RuntimeException("Errore Db");
 		}
 	}
+
+	public static List<Song> getCanzoniAffini(int durata, double popularity, double energy, double danceability,
+			boolean tollBassa, boolean tollAlta) {
+		List<Song> canzoniAffini = new ArrayList<>();
+		final String sql = "SELECT * FROM top10s WHERE pop BETWEEN ? AND ? "
+				+ "AND nrgy BETWEEN ? AND ? "
+				+ "AND dnce BETWEEN ? AND ?";
+		
+		double popInf = 0.0;
+		double popSup = 0.0;
+		double nrgyInf = 0.0;
+		double nrgySup = 0.0;
+		double dnceInf = 0.0;
+		double dnceSup = 0.0;
+		
+		if(tollBassa == true) {
+			popInf = popularity - 10;
+			popSup = popularity + 10;
+			nrgyInf = energy - 10;
+			nrgySup = energy + 10;
+			dnceInf = danceability - 10;
+			dnceSup = danceability + 10;
+			
+		} else {
+			popInf = popularity - 20;
+			popSup = popularity + 20;
+			nrgyInf = energy - 20;
+			nrgySup = energy + 20;
+			dnceInf = danceability - 20;
+			dnceSup = danceability + 20;
+		}
+		
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setDouble(1, popInf);
+			st.setDouble(2, popSup);
+			st.setDouble(3, nrgyInf);
+			st.setDouble(4, nrgySup);
+			st.setDouble(5, dnceInf);
+			st.setDouble(6, dnceSup);
+
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				Song s = new Song (rs.getInt("id"), rs.getString("title"), rs.getString("artist"), rs.getString("top_genre"), rs.getInt("year"),  rs.getInt("bpm"), rs.getInt("nrgy"), rs.getInt("dnce"), rs.getInt("dB"),
+						rs.getInt("live"), rs.getInt("val"), rs.getInt("dur"), rs.getInt("acous"), rs.getInt("spch"), rs.getInt("pop"));
+				canzoniAffini.add(s);
+			}
+			conn.close();
+			return canzoniAffini;
+
+		} catch (SQLException e) {
+			 e.printStackTrace();
+			throw new RuntimeException("Errore Db");
+		}
+		
+	}
+
+	
 }

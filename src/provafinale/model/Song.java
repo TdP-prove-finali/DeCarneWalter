@@ -97,6 +97,11 @@ public class Song {
 	public int getPop() {
 		return pop;
 	}
+
+	public int getAffinita() {
+		int affinita = nrgy + dnce + pop;
+		return affinita;
+	}
 	
 	
 	

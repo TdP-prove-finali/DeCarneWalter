@@ -152,7 +152,32 @@ public class SpotifyController {
 
     @FXML
     void doGenera(ActionEvent event) {
-
+    	txtAreaGenera.clear();
+    	int durata = 0;
+    	try {
+    		durata = Integer.parseInt(txtFieldDurata.getText());
+    	} catch (NumberFormatException e) {
+    		txtAreaGenera.appendText("Inserire nel campo \"Durata\" i minuti di durata massima della playlist");
+    		return;
+    	}
+    	
+    	double popularity = sliderPopularity.getValue();
+    	double energy = sliderEnergy.getValue();
+    	double danceability = sliderDanceability.getValue();
+    	
+    	boolean tollBassa = radioBassa.isSelected();
+    	boolean tollAlta = radioAlta.isSelected();
+    	
+    	if(tollBassa == false && tollAlta == false) {
+    		txtAreaGenera.appendText("Selezionare la tolleranza");
+    		return;
+    	}
+    	
+    	List<Song> risultato = model.generaPlaylistOttima(durata, popularity, energy, danceability, tollBassa, tollAlta);
+    	
+    	for(Song s : risultato) {
+    		txtAreaGenera.appendText(s.getTitle()+"\n");
+    	}
     }
 
     @FXML
@@ -163,6 +188,7 @@ public class SpotifyController {
     	txtFieldDurata.clear();
     	radioBassa.setSelected(false);
     	radioAlta.setSelected(false);
+    	txtAreaGenera.clear();
     }
     
 
