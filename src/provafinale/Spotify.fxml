@@ -4,6 +4,7 @@
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -22,8 +23,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane style="-fx-background-color: #191414; -fx-border-color: white; -fx-border-style: solid; -fx-border-width: 3;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="provafinale.SpotifyController">
+<BorderPane prefHeight="700.0" prefWidth="1100.0" style="-fx-background-color: #191414; -fx-border-color: white; -fx-border-style: solid; -fx-border-width: 3;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="provafinale.SpotifyController">
    <center>
       <TabPane stylesheets="@application.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
@@ -31,130 +33,162 @@
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <VBox stylesheets="@../../../../git/DeCarneWalter/DeCarneWalter/SpotifyPlaylist/src/provafinale/application.css">
+                        <HBox>
                            <children>
-                              <Label text="Ricerca brani" textFill="WHITE">
-                                 <VBox.margin>
-                                    <Insets bottom="-20.0" left="160.0" />
-                                 </VBox.margin>
-                                 <font>
-                                    <Font name="American Typewriter Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                              <HBox>
+                              <VBox stylesheets="@../../../../git/DeCarneWalter/DeCarneWalter/SpotifyPlaylist/src/provafinale/application.css">
                                  <children>
                                     <HBox>
                                        <children>
-                                          <ImageView fitHeight="167.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../img/Spotify%20logo.png" />
-                                             </image>
-                                             <HBox.margin>
-                                                <Insets left="5.0" top="25.0" />
-                                             </HBox.margin>
-                                          </ImageView>
-                                       </children>
-                                    </HBox>
-                                    <HBox>
-                                       <children>
-                                          <VBox>
+                                          <HBox>
                                              <children>
-                                                <HBox>
+                                                <ImageView fitHeight="167.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../img/Spotify%20logo.png" />
+                                                   </image>
+                                                   <HBox.margin>
+                                                      <Insets left="-20.0" top="25.0" />
+                                                   </HBox.margin>
+                                                </ImageView>
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <VBox>
                                                    <children>
-                                                      <Label text="Artista" textFill="#1db954">
-                                                         <HBox.margin>
-                                                            <Insets left="10.0" right="10.0" top="10.0" />
-                                                         </HBox.margin>
-                                                         <font>
-                                                            <Font name="American Typewriter Bold" size="14.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <TextField fx:id="txtFieldArtista">
-                                                         <HBox.margin>
-                                                            <Insets left="10.0" right="10.0" top="10.0" />
-                                                         </HBox.margin>
-                                                      </TextField>
+                                                      <HBox>
+                                                         <children>
+                                                            <Label text="Artista" textFill="#1db954">
+                                                               <HBox.margin>
+                                                                  <Insets left="10.0" right="10.0" top="10.0" />
+                                                               </HBox.margin>
+                                                               <font>
+                                                                  <Font name="American Typewriter Bold" size="14.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <TextField fx:id="txtFieldArtista">
+                                                               <HBox.margin>
+                                                                  <Insets left="10.0" right="10.0" top="10.0" />
+                                                               </HBox.margin>
+                                                            </TextField>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox>
+                                                         <children>
+                                                            <Label text="Genere" textFill="#1db954">
+                                                               <HBox.margin>
+                                                                  <Insets left="8.0" right="8.0" top="13.0" />
+                                                               </HBox.margin>
+                                                               <font>
+                                                                  <Font name="American Typewriter Bold" size="14.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <ChoiceBox fx:id="choiceBoxGenere" prefWidth="161.0" stylesheets="@application.css">
+                                                               <HBox.margin>
+                                                                  <Insets bottom="10.0" left="15.0" right="8.0" top="10.0" />
+                                                               </HBox.margin>
+                                                            </ChoiceBox>
+                                                         </children>
+                                                         <VBox.margin>
+                                                            <Insets top="10.0" />
+                                                         </VBox.margin>
+                                                      </HBox>
+                                                      <HBox>
+                                                         <children>
+                                                            <Label text="Anno" textFill="#1db954">
+                                                               <font>
+                                                                  <Font name="American Typewriter Bold" size="14.0" />
+                                                               </font>
+                                                               <HBox.margin>
+                                                                  <Insets left="12.0" right="10.0" top="5.0" />
+                                                               </HBox.margin>
+                                                            </Label>
+                                                            <ChoiceBox fx:id="choiceBoxAnno" stylesheets="@application.css">
+                                                               <HBox.margin>
+                                                                  <Insets left="21.0" />
+                                                               </HBox.margin>
+                                                            </ChoiceBox>
+                                                         </children>
+                                                         <VBox.margin>
+                                                            <Insets top="10.0" />
+                                                         </VBox.margin>
+                                                      </HBox>
+                                                      <ButtonBar buttonMinWidth="0.0">
+                                                        <buttons>
+                                                            <Button fx:id="buttonCancella" mnemonicParsing="false" onAction="#doCancella" style="-fx-background-color: #1DB954; -fx-font: &quot;American Typewriter&quot;;" text="Cancella">
+                                                               <font>
+                                                                  <Font name="American Typewriter" size="13.0" />
+                                                               </font>
+                                                            </Button>
+                                                          <Button fx:id="buttonCerca" mnemonicParsing="false" onAction="#doCerca" style="-fx-background-color: #1DB954;" text="Cerca">
+                                                               <font>
+                                                                  <Font name="American Typewriter Bold" size="13.0" />
+                                                               </font>
+                                                            </Button>
+                                                        </buttons>
+                                                         <VBox.margin>
+                                                            <Insets bottom="10.0" right="40.0" top="30.0" />
+                                                         </VBox.margin>
+                                                      </ButtonBar>
                                                    </children>
-                                                </HBox>
-                                                <HBox>
-                                                   <children>
-                                                      <Label text="Genere" textFill="#1db954">
-                                                         <HBox.margin>
-                                                            <Insets left="8.0" right="8.0" top="13.0" />
-                                                         </HBox.margin>
-                                                         <font>
-                                                            <Font name="American Typewriter Bold" size="14.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <ChoiceBox fx:id="choiceBoxGenere" prefWidth="161.0">
-                                                         <HBox.margin>
-                                                            <Insets bottom="10.0" left="15.0" right="8.0" top="10.0" />
-                                                         </HBox.margin>
-                                                      </ChoiceBox>
-                                                   </children>
-                                                   <VBox.margin>
-                                                      <Insets top="10.0" />
-                                                   </VBox.margin>
-                                                </HBox>
-                                                <HBox>
-                                                   <children>
-                                                      <Label text="Anno" textFill="#1db954">
-                                                         <font>
-                                                            <Font name="American Typewriter Bold" size="14.0" />
-                                                         </font>
-                                                         <HBox.margin>
-                                                            <Insets left="12.0" right="10.0" top="5.0" />
-                                                         </HBox.margin>
-                                                      </Label>
-                                                      <ChoiceBox fx:id="choiceBoxAnno">
-                                                         <HBox.margin>
-                                                            <Insets left="21.0" />
-                                                         </HBox.margin>
-                                                      </ChoiceBox>
-                                                   </children>
-                                                   <VBox.margin>
-                                                      <Insets top="10.0" />
-                                                   </VBox.margin>
-                                                </HBox>
-                                                <ButtonBar buttonMinWidth="0.0">
-                                                  <buttons>
-                                                      <Button fx:id="buttonCancella" mnemonicParsing="false" onAction="#doCancella" style="-fx-background-color: #1DB954; -fx-font: &quot;American Typewriter&quot;;" text="Cancella">
-                                                         <font>
-                                                            <Font name="American Typewriter" size="13.0" />
-                                                         </font>
-                                                      </Button>
-                                                    <Button fx:id="buttonCerca" mnemonicParsing="false" onAction="#doCerca" style="-fx-background-color: #1DB954;" text="Cerca">
-                                                         <font>
-                                                            <Font name="American Typewriter Bold" size="13.0" />
-                                                         </font>
-                                                      </Button>
-                                                  </buttons>
-                                                   <VBox.margin>
-                                                      <Insets bottom="10.0" right="40.0" top="30.0" />
-                                                   </VBox.margin>
-                                                </ButtonBar>
+                                                   <HBox.margin>
+                                                      <Insets left="30.0" top="30.0" />
+                                                   </HBox.margin>
+                                                </VBox>
                                              </children>
                                              <HBox.margin>
-                                                <Insets left="10.0" top="30.0" />
+                                                <Insets />
                                              </HBox.margin>
-                                          </VBox>
+                                          </HBox>
                                        </children>
+                                       <VBox.margin>
+                                          <Insets left="70.0" top="30.0" />
+                                       </VBox.margin>
                                     </HBox>
+                                    <TextArea fx:id="txtAreaRicerca" editable="false" prefHeight="358.0" prefWidth="517.0" stylesheets="@application.css">
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="6.0" top="24.0" />
+                                       </VBox.margin>
+                                    </TextArea>
                                  </children>
-                                 <VBox.margin>
-                                    <Insets top="30.0" />
-                                 </VBox.margin>
-                              </HBox>
-                              <TextArea fx:id="txtAreaRicerca" editable="false" prefHeight="180.0" prefWidth="414.0" stylesheets="@application.css">
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="6.0" top="24.0" />
-                                 </VBox.margin>
-                              </TextArea>
+                                 <padding>
+                                    <Insets top="15.0" />
+                                 </padding>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <Text fx:id="txtYearPieChart" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0">
+                                       <font>
+                                          <Font name="American Typewriter Bold" size="18.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="430.0" top="20.0" />
+                                       </VBox.margin>
+                                    </Text>
+                                    <PieChart fx:id="genresPieChart" legendVisible="false" maxHeight="350.0" scaleShape="false" stylesheets="@application.css" title="Generi" titleSide="BOTTOM">
+                                       <VBox.margin>
+                                          <Insets top="-40.0" />
+                                       </VBox.margin>
+                                    </PieChart>
+                                    <BarChart fx:id="yearsBarChart" animated="false" barGap="0.0" categoryGap="5.0" prefHeight="300.0" prefWidth="500.0" stylesheets="@application.css" verticalGridLinesVisible="false">
+                                      <xAxis>
+                                        <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
+                                      </xAxis>
+                                      <yAxis>
+                                        <NumberAxis autoRanging="false" minorTickCount="1" minorTickVisible="false" side="LEFT" tickLabelRotation="-20.0" tickLength="20.0" tickMarkVisible="false" tickUnit="1.0" upperBound="10.0" />
+                                      </yAxis>
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+                                    </BarChart>
+                                 </children>
+                              </VBox>
                            </children>
-                           <padding>
-                              <Insets top="15.0" />
-                           </padding>
-                        </VBox>
+                        </HBox>
+                        <Label text="Ricerca brani" textFill="WHITE" AnchorPane.leftAnchor="450.0" AnchorPane.topAnchor="10.0">
+                           <font>
+                              <Font name="American Typewriter Bold" size="24.0" />
+                           </font>
+                        </Label>
                      </children>
                   </AnchorPane>
                </content>
@@ -216,7 +250,7 @@
                                                             <Font name="American Typewriter Bold" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <Slider fx:id="sliderPopularity">
+                                                      <Slider fx:id="sliderPopularity" showTickLabels="true" showTickMarks="true">
                                                          <HBox.margin>
                                                             <Insets left="13.0" />
                                                          </HBox.margin>
@@ -235,7 +269,7 @@
                                                             <Font name="American Typewriter Bold" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <Slider fx:id="sliderEnergy">
+                                                      <Slider fx:id="sliderEnergy" showTickLabels="true" showTickMarks="true">
                                                          <HBox.margin>
                                                             <Insets left="37.0" />
                                                          </HBox.margin>
@@ -254,7 +288,7 @@
                                                             <Font name="American Typewriter Bold" size="14.0" />
                                                          </font>
                                                       </Label>
-                                                      <Slider fx:id="sliderDanceability" />
+                                                      <Slider fx:id="sliderDanceability" showTickLabels="true" showTickMarks="true" />
                                                    </children>
                                                    <VBox.margin>
                                                       <Insets left="20.0" right="20.0" top="10.0" />
@@ -316,7 +350,7 @@
                                     <Insets bottom="20.0" top="20.0" />
                                  </VBox.margin>
                               </ButtonBar>
-                              <TextArea fx:id="txtAreaGenera" editable="false" prefHeight="180.0" prefWidth="414.0">
+                              <TextArea fx:id="txtAreaGenera" editable="false">
                                  <VBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </VBox.margin>
@@ -327,40 +361,6 @@
                   </AnchorPane>
                </content>
           </Tab>
-            <Tab text="Statistiche">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0">
-                     <children>
-                        <VBox>
-                           <children>
-                              <Label stylesheets="@application.css" text="Statistiche" textFill="WHITE">
-                                 <font>
-                                    <Font name="American Typewriter Bold" size="18.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="20.0" />
-                                 </padding>
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="150.0" top="15.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <BarChart fx:id="yearsBarChart" prefHeight="211.0">
-                                <xAxis>
-                                  <CategoryAxis label="Anni" side="BOTTOM" tickLabelFill="WHITE" />
-                                </xAxis>
-                                <yAxis>
-                                  <NumberAxis label="Numero di canzoni" minorTickCount="1" minorTickVisible="false" side="LEFT" tickLabelRotation="-20.0" tickUnit="1.0" upperBound="10.0" />
-                                </yAxis>
-                                 <opaqueInsets>
-                                    <Insets />
-                                 </opaqueInsets>
-                              </BarChart>
-                           </children>
-                        </VBox>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </Tab>
         </tabs>
          <BorderPane.margin>
             <Insets />

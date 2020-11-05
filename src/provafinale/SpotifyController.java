@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
@@ -19,6 +20,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import provafinale.database.SpotifyDAO;
 import provafinale.model.Model;
 import provafinale.model.Song;
@@ -29,6 +31,9 @@ public class SpotifyController {
 	SpotifyDAO dao;
 	
 	ObservableList<Integer> anni;
+	List<String> artistiGrafico;
+	List<String> generiGrafico;
+	int contatoreGrafico;
 
     @FXML
     private Tab tabRicerca;
@@ -83,6 +88,12 @@ public class SpotifyController {
 
     @FXML
     private BarChart<String, Integer> yearsBarChart;
+    
+    @FXML
+    private PieChart genresPieChart;
+    
+    @FXML
+    private Text txtYearPieChart;
 
     @FXML
     void doCancella(ActionEvent event) {
@@ -90,7 +101,16 @@ public class SpotifyController {
     	choiceBoxGenere.getSelectionModel().clearSelection();
     	choiceBoxAnno.getSelectionModel().clearSelection();
     	txtAreaRicerca.clear();
+    	
     	yearsBarChart.getData().clear();
+    	artistiGrafico.clear();
+    	generiGrafico.clear();
+    	genresPieChart.getData().clear();
+    	
+    	txtYearPieChart.setText("");
+    	
+    	contatoreGrafico = 0;
+    	
     }
 
     @FXML
@@ -107,15 +127,23 @@ public class SpotifyController {
     	
     	if(!artista.equals("") && genere != null) {
     		txtAreaRicerca.setText("E' possibile la ricerca per artista, per genere o per anno.\nE' inoltre possibile la ricerca per artista e anno  e per genere e anno.");
+    		yearsBarChart.getData().clear();
+    		genresPieChart.getData().clear();
+    		txtYearPieChart.setText("");
     		return;
     	}
     	else if(!artista.equals("") && genere==null) {
     		if(anno!=0) {
     			canzoni = dao.getAllYearArtistSong(artista, anno);
+    			yearsBarChart.getData().clear();
+    			genresPieChart.getData().clear();
+    			txtYearPieChart.setText("");
     		}
     		else {
     			canzoni = dao.getAllArtistSong(artista);
-    			disegnaBarChart(canzoni, artista);
+    			disegnaBarChartArtista(canzoni, artista);
+    			genresPieChart.getData().clear();
+    			txtYearPieChart.setText("");
     		}
     		
         	if(canzoni.isEmpty()) {
@@ -130,8 +158,14 @@ public class SpotifyController {
     	else if (artista.equals("") && genere!=null) {
     		if(anno!=0) {
     			canzoni = dao.getAllYearGenreSongs(genere, anno);
+    			yearsBarChart.getData().clear();
+    			genresPieChart.getData().clear();
+    			txtYearPieChart.setText("");
     		} else {
     			canzoni = dao.getAllGenreSongs(genere);
+    			disegnaBarChartGenere(canzoni, genere);
+    			genresPieChart.getData().clear();
+    			txtYearPieChart.setText("");
     		}
     		if(canzoni.isEmpty()) {
     			txtAreaRicerca.setText("Nessuna canzone di quel genere trovata per l'anno selezionato");
@@ -141,13 +175,17 @@ public class SpotifyController {
     		}
     	} else if(artista.equals("") && genere == null && anno!=0) {
     		canzoni = dao.getAllYearSongs(anno);
+    		disegnaPieChart(canzoni, anno);
+    		yearsBarChart.getData().clear();
     		for(Song s : canzoni) {
     			txtAreaRicerca.appendText(s.getArtist()+" - "+s.getTitle()+"\n");
     		}
-    		
     	}
     	else if (artista.equals("") && genere == null && anno == 0) {
     		txtAreaRicerca.setText("Inserire un artista o un genere o un anno da cercare");
+    		yearsBarChart.getData().clear();
+    		genresPieChart.getData().clear();
+    		txtYearPieChart.setText("");
     	}
     	try {
     		txtAreaRicerca.appendText("\nCanzone più popolare: "+model.canzonePiuPopolare(canzoni).getTitle().toUpperCase()+"\n");
@@ -162,12 +200,22 @@ public class SpotifyController {
     }
 
 	@SuppressWarnings("unchecked")
-	private void disegnaBarChart(List<Song> canzoni, String artista) {
+	private void disegnaBarChartArtista(List<Song> canzoni, String artista) {
 		if(canzoni.isEmpty())
 			return;
 		
+		if(!artistiGrafico.contains(artista.toLowerCase())) {
+			artistiGrafico.add(artista.toLowerCase());
+		} else {
+			return;
+		}
+		if(contatoreGrafico>1) {
+			yearsBarChart.getData().clear();
+			contatoreGrafico=0;
+		}
     	 XYChart.Series<String, Integer> series = new Series<>();
     	 series.setName(artista);
+    	 contatoreGrafico++;
     		for(int i=2010; i<=2019; i++) {
         		series.getData().add(new XYChart.Data<String, Integer>(i+"", 0));
         		}
@@ -177,6 +225,54 @@ public class SpotifyController {
     		}
     	
     	 yearsBarChart.getData().addAll(series);
+    	
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void disegnaBarChartGenere(List<Song> canzoni, String genere) {
+		if(canzoni.isEmpty())
+			return;
+		
+		if(!generiGrafico.contains(genere.toLowerCase())) {
+			generiGrafico.add(genere.toLowerCase());
+		} else {
+			return;
+		}
+		
+		if(contatoreGrafico>1) {
+			yearsBarChart.getData().clear();
+			contatoreGrafico=0;
+		}
+		
+    	 XYChart.Series<String, Integer> series = new Series<>();
+    	 series.setName(genere);
+    	 contatoreGrafico++;
+    		for(int i=2010; i<=2019; i++) {
+        		series.getData().add(new XYChart.Data<String, Integer>(i+"", 0));
+        		}
+    		
+    	for(Song s : canzoni) {
+    		series.getData().add(new XYChart.Data<String, Integer>(s.getYear()+"", dao.getAllYearGenreSongs(s.getTopGenre(), s.getYear()).size()));
+    		}
+    	
+    	 yearsBarChart.getData().addAll(series);
+	}
+	
+	private void disegnaPieChart(List<Song> canzoni, int anno) {
+		ObservableList<PieChart.Data> generi = FXCollections.observableArrayList();
+		if(canzoni.isEmpty()) {
+			return;
+		}
+		generi.clear();
+		List<String> generiGiaInseriti = new ArrayList<>();
+		for(Song s : canzoni) {
+			if(!generiGiaInseriti.contains(s.getTopGenre())) {
+				generiGiaInseriti.add(s.getTopGenre());
+				generi.add(new PieChart.Data(s.getTopGenre(), dao.getAllYearGenreSongs(s.getTopGenre(), anno).size()));
+			}
+		}
+		txtYearPieChart.setText(""+anno);
+		genresPieChart.setData(generi);
 	}
 
 	@FXML
@@ -244,6 +340,7 @@ public class SpotifyController {
         assert buttonGenera != null : "fx:id=\"buttonGenera\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert txtAreaGenera != null : "fx:id=\"txtAreaGenera\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert yearsBarChart != null : "fx:id=\"yearsBarChart\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert genresPieChart != null : "fx:id=\"genresPieChart\" was not injected: check your FXML file 'Spotify.fxml'.";
 
     	sliderPopularity.setValue(50);
     	sliderEnergy.setValue(50);
@@ -259,6 +356,10 @@ public class SpotifyController {
         Collections.sort(anni);
         choiceBoxGenere.setItems(generi);
         choiceBoxAnno.setItems(anni);
+        
+        artistiGrafico = new ArrayList<>();
+        generiGrafico = new ArrayList<>();
+        contatoreGrafico = 0;
     }
 
 }
