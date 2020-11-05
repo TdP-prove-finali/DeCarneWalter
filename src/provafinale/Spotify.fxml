@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -324,6 +327,40 @@
                   </AnchorPane>
                </content>
           </Tab>
+            <Tab text="Statistiche">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0">
+                     <children>
+                        <VBox>
+                           <children>
+                              <Label stylesheets="@application.css" text="Statistiche" textFill="WHITE">
+                                 <font>
+                                    <Font name="American Typewriter Bold" size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="150.0" top="15.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <BarChart fx:id="yearsBarChart" prefHeight="211.0">
+                                <xAxis>
+                                  <CategoryAxis label="Anni" side="BOTTOM" tickLabelFill="WHITE" />
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis label="Numero di canzoni" minorTickCount="1" minorTickVisible="false" side="LEFT" tickLabelRotation="-20.0" tickUnit="1.0" upperBound="10.0" />
+                                </yAxis>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                              </BarChart>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
         </tabs>
          <BorderPane.margin>
             <Insets />

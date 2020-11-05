@@ -208,20 +208,20 @@ final String sql = "SELECT * FROM top10s WHERE artist = ? AND year = ?";
 		double dnceSup = 0.0;
 		
 		if(tollBassa == true) {
-			popInf = popularity - 10;
-			popSup = popularity + 10;
-			nrgyInf = energy - 10;
-			nrgySup = energy + 10;
-			dnceInf = danceability - 10;
-			dnceSup = danceability + 10;
+			popInf = popularity - 5;
+			popSup = popularity + 5;
+			nrgyInf = energy - 5;
+			nrgySup = energy + 5;
+			dnceInf = danceability - 5;
+			dnceSup = danceability + 5;
 			
 		} else {
-			popInf = popularity - 20;
-			popSup = popularity + 20;
-			nrgyInf = energy - 20;
-			nrgySup = energy + 20;
-			dnceInf = danceability - 20;
-			dnceSup = danceability + 20;
+			popInf = popularity - 5;
+			popSup = popularity + 5;
+			nrgyInf = energy - 5;
+			nrgySup = energy + 5;
+			dnceInf = danceability - 5;
+			dnceSup = danceability + 5;
 		}
 		
 		try {
@@ -242,6 +242,7 @@ final String sql = "SELECT * FROM top10s WHERE artist = ? AND year = ?";
 				canzoniAffini.add(s);
 			}
 			conn.close();
+			System.out.println(canzoniAffini.size());
 			return canzoniAffini;
 
 		} catch (SQLException e) {

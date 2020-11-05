@@ -8,6 +8,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.RadioButton;
@@ -23,6 +27,8 @@ public class SpotifyController {
 	
 	Model model;
 	SpotifyDAO dao;
+	
+	ObservableList<Integer> anni;
 
     @FXML
     private Tab tabRicerca;
@@ -76,11 +82,15 @@ public class SpotifyController {
     private TextArea txtAreaGenera;
 
     @FXML
+    private BarChart<String, Integer> yearsBarChart;
+
+    @FXML
     void doCancella(ActionEvent event) {
     	txtFieldArtista.clear();
     	choiceBoxGenere.getSelectionModel().clearSelection();
     	choiceBoxAnno.getSelectionModel().clearSelection();
     	txtAreaRicerca.clear();
+    	yearsBarChart.getData().clear();
     }
 
     @FXML
@@ -105,6 +115,7 @@ public class SpotifyController {
     		}
     		else {
     			canzoni = dao.getAllArtistSong(artista);
+    			disegnaBarChart(canzoni, artista);
     		}
     		
         	if(canzoni.isEmpty()) {
@@ -150,7 +161,25 @@ public class SpotifyController {
     	
     }
 
-    @FXML
+	@SuppressWarnings("unchecked")
+	private void disegnaBarChart(List<Song> canzoni, String artista) {
+		if(canzoni.isEmpty())
+			return;
+		
+    	 XYChart.Series<String, Integer> series = new Series<>();
+    	 series.setName(artista);
+    		for(int i=2010; i<=2019; i++) {
+        		series.getData().add(new XYChart.Data<String, Integer>(i+"", 0));
+        		}
+    		
+    	for(Song s : canzoni) {
+    		series.getData().add(new XYChart.Data<String, Integer>(s.getYear()+"", dao.getAllYearArtistSong(s.getArtist(), s.getYear()).size()));
+    		}
+    	
+    	 yearsBarChart.getData().addAll(series);
+	}
+
+	@FXML
     void doGenera(ActionEvent event) {
     	txtAreaGenera.clear();
     	int durata = 0;
@@ -175,12 +204,15 @@ public class SpotifyController {
     	
     	List<Song> risultato = model.generaPlaylistOttima(durata, popularity, energy, danceability, tollBassa, tollAlta);
     	
+    	int dur = 0;
     	for(Song s : risultato) {
+    		dur+=s.getDur();
     		txtAreaGenera.appendText(s.getTitle()+"\n");
     	}
+    	txtAreaGenera.appendText("\nLa playlist ha durata "+dur/60+" minuti e "+dur%60+" secondi");
     }
 
-    @FXML
+	@FXML
     void doReset(ActionEvent event) {
     	sliderPopularity.setValue(50);
     	sliderEnergy.setValue(50);
@@ -211,6 +243,7 @@ public class SpotifyController {
         assert buttonReset != null : "fx:id=\"buttonReset\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert buttonGenera != null : "fx:id=\"buttonGenera\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert txtAreaGenera != null : "fx:id=\"txtAreaGenera\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert yearsBarChart != null : "fx:id=\"yearsBarChart\" was not injected: check your FXML file 'Spotify.fxml'.";
 
     	sliderPopularity.setValue(50);
     	sliderEnergy.setValue(50);
@@ -219,7 +252,7 @@ public class SpotifyController {
         dao = new SpotifyDAO();
         model = new Model();
         ObservableList<String> generi = FXCollections.observableArrayList();
-        ObservableList<Integer> anni = FXCollections.observableArrayList();
+        anni = FXCollections.observableArrayList();
         generi.addAll(dao.getAllGenres());
         anni.addAll(dao.getAllYears());
         Collections.sort(generi);

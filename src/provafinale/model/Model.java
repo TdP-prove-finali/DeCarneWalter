@@ -7,7 +7,7 @@ import provafinale.database.SpotifyDAO;
 
 public class Model {
 	
-	int affinitaMin = Integer.MAX_VALUE;
+	int affinitaMin;
 	
 	public Song canzonePiuPopolare (List<Song> canzoni) {
 		int maxPop = 0;
@@ -36,44 +36,51 @@ public class Model {
 	public List<Song> generaPlaylistOttima(int durata, double popularity, double energy, double danceability,
 			boolean tollBassa, boolean tollAlta) {
 		
+		affinitaMin = Integer.MAX_VALUE;
+		
 		List<Song> listaCanzoniAffini = SpotifyDAO.getCanzoniAffini(durata, popularity, energy, danceability, tollBassa, tollAlta);
 		
 		List<Song> parziale = new ArrayList<>();
 		List<Song> best = new ArrayList<>();
 		
-		cerca(parziale, best, durata, listaCanzoniAffini);
+		double indice = popularity + energy + danceability;
+		
+		cerca(parziale, best, durata, listaCanzoniAffini, indice);
+		
+		for(Song s : best) {
+			System.out.println(s.getTitle());
+		}
+		
 		
 		return best;
 		
 		
 	}
 	
-	private void cerca(List<Song> parziale, List<Song> best, int durata, List<Song> lista) {
+	private void cerca(List<Song> parziale, List<Song> best, int durata, List<Song> lista, double indice) {
 		int sommaDurata = 0;
 		int affinitaTot = 0;
-		//System.out.println(indiceMin);
+		
 		
 		//caso terminale
 		for(Song s : parziale) {
 			sommaDurata+= s.getDur();
-			affinitaTot += s.getAffinita();
+			affinitaTot += Math.abs(s.getAffinita()-indice);
 		}
 		
-			if (sommaDurata>=(durata*60)-300 && sommaDurata<=(durata*60)+60) {
+			if (sommaDurata>=(durata*60)-300 && sommaDurata<=(durata*60)+300) {
 				
 				if(affinitaTot<affinitaMin) {
-					affinitaTot = affinitaMin;
+					affinitaMin = affinitaTot;
 					best.clear();
-					for(Song s : parziale) {
-						best.add(s);
-					}
+					best.addAll(parziale);
 				}
 				return;
 			}
 				for(Song song : lista) {
 					if (!parziale.contains(song)) {
 						parziale.add(song);
-						cerca(parziale, best, durata, lista);
+						cerca(parziale, best, durata, lista, indice);
 						parziale.remove(parziale.size()-1);
 					}
 				}
