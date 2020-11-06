@@ -1,7 +1,10 @@
 package provafinale.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import provafinale.database.SpotifyDAO;
 
@@ -83,6 +86,47 @@ public class Model {
 				}
 
 		}
+	
+	
+	public List<Genre> generaGraficoPlaylist(List<Song> canzoni) {
+		if(canzoni.isEmpty()) {
+			return null;
+		}
+		
+		Map<String, Genre> generiGiaInseriti = new HashMap<>();
+		for(Song s : canzoni) {
+			if(!generiGiaInseriti.containsKey(s.getTopGenre())) {
+				generiGiaInseriti.put(s.getTopGenre(), new Genre(s.getTopGenre(), 1));
+			} else {
+				generiGiaInseriti.get(s.getTopGenre()).increaseCounter();
+			}
+		}
+		
+		List<Genre> generiOrdinati = new ArrayList<>();
+		for (Map.Entry<String, Genre> entry : generiGiaInseriti.entrySet()) {
+			generiOrdinati.add(entry.getValue());
+		}
+		
+		Collections.sort(generiOrdinati);
+		
+		List<Genre> generiFinali = new ArrayList<>();
+		int i;
+		for(i=0; i<5 && i<generiOrdinati.size(); i++) {
+			generiFinali.add(generiOrdinati.get(i));
+		}
+		int contatore = 0;
+		while (i<generiOrdinati.size()) {
+			contatore += generiOrdinati.get(i).getCounter();
+			i++;
+		}
+		if(contatore>0) {
+			generiFinali.add(new Genre("altro", contatore));
+		}
+	
+		
+		return generiFinali;
+		
+	}
 
 	
 	

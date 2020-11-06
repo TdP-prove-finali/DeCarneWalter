@@ -2,7 +2,9 @@ package provafinale;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +24,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import provafinale.database.SpotifyDAO;
+import provafinale.model.Genre;
 import provafinale.model.Model;
 import provafinale.model.Song;
 
@@ -103,6 +106,9 @@ public class SpotifyController {
     
     @FXML
     private Text txtDurataPlaylist;
+    
+    @FXML
+    private PieChart pieChartPlaylist;
 
     @FXML
     void doCancella(ActionEvent event) {
@@ -292,18 +298,18 @@ public class SpotifyController {
 	}
 	
 	private void disegnaPieChart(List<Song> canzoni, int anno) {
-		ObservableList<PieChart.Data> generi = FXCollections.observableArrayList();
-		if(canzoni.isEmpty()) {
+		
+		if(canzoni.isEmpty())
 			return;
-		}
-		generi.clear();
-		List<String> generiGiaInseriti = new ArrayList<>();
-		for(Song s : canzoni) {
-			if(!generiGiaInseriti.contains(s.getTopGenre())) {
-				generiGiaInseriti.add(s.getTopGenre());
-				generi.add(new PieChart.Data(s.getTopGenre(), dao.getAllYearGenreSongs(s.getTopGenre(), anno).size()));
+		
+		ObservableList<PieChart.Data> generi = FXCollections.observableArrayList();
+		
+		List<Genre> generiGrafico = model.generaGraficoPlaylist(canzoni);
+		
+			for(Genre g : generiGrafico) {
+				generi.add(new PieChart.Data(g.getName(), g.getCounter()));
 			}
-		}
+		
 		txtYearPieChart.setText(""+anno);
 		genresPieChart.setData(generi);
 	}
@@ -337,10 +343,27 @@ public class SpotifyController {
     	int dur = 0;
     	for(Song s : risultato) {
     		dur+=s.getDur();
-    		txtAreaGenera.appendText(s.getTitle()+"\n");
+    		txtAreaGenera.appendText(s.getArtist()+" - "+s.getTitle()+"\n");
     	}
+    	disegnaPieChartPlaylist(risultato);
     	txtDurataPlaylist.setText(dur/60+" minuti e "+dur%60+" secondi");
     }
+	
+	private void disegnaPieChartPlaylist(List<Song> canzoni) {
+		ObservableList<PieChart.Data> generi = FXCollections.observableArrayList();
+		generi.clear();
+		List<Genre> generiPerGrafico = model.generaGraficoPlaylist(canzoni);
+		try{
+			for(Genre g : generiPerGrafico) {
+				generi.add(new PieChart.Data(g.getName(), g.getCounter()));
+			}
+		} catch (NullPointerException e) {
+			return;
+		}
+		
+		pieChartPlaylist.setData(generi);
+	}
+	
 
 	@FXML
     void doReset(ActionEvent event) {
@@ -352,6 +375,7 @@ public class SpotifyController {
     	radioAlta.setSelected(false);
     	txtAreaGenera.clear();
     	txtDurataPlaylist.setText("");
+    	pieChartPlaylist.getData().clear();
     }
     
 
@@ -379,6 +403,7 @@ public class SpotifyController {
         assert yearsBarChart != null : "fx:id=\"yearsBarChart\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert genresPieChart != null : "fx:id=\"genresPieChart\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert txtDurataPlaylist != null : "fx:id=\"txtDurataPlaylist\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert pieChartPlaylist != null : "fx:id=\"pieChartPlaylist\" was not injected: check your FXML file 'Spotify.fxml'.";
 
 
     	sliderPopularity.setValue(50);

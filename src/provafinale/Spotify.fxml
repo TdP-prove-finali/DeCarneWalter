@@ -204,7 +204,7 @@
                                           <Insets left="430.0" top="20.0" />
                                        </VBox.margin>
                                     </Text>
-                                    <PieChart fx:id="genresPieChart" legendVisible="false" maxHeight="350.0" scaleShape="false" stylesheets="@application.css" title="Generi" titleSide="BOTTOM">
+                                    <PieChart fx:id="genresPieChart" labelsVisible="false" maxHeight="350.0" scaleShape="false" stylesheets="@application.css" title="Generi" titleSide="BOTTOM">
                                        <VBox.margin>
                                           <Insets top="-40.0" />
                                        </VBox.margin>
@@ -431,7 +431,11 @@
                               </VBox>
                               <VBox>
                                  <children>
-                                    <PieChart fx:id="pieChartPlaylist" legendVisible="false" />
+                                    <PieChart fx:id="pieChartPlaylist" labelsVisible="false">
+                                       <VBox.margin>
+                                          <Insets top="100.0" />
+                                       </VBox.margin>
+                                    </PieChart>
                                  </children>
                               </VBox>
                            </children>

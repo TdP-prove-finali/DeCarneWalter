@@ -36,7 +36,7 @@ public class SpotifyDAO {
 	
 	public List<Song> getAllArtistSong(String artist){
 		
-		final String sql = "SELECT * FROM top10s WHERE artist = ?";
+		final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ?";
 		
 		List<Song> songs = new ArrayList<>();
 		
@@ -64,7 +64,7 @@ public class SpotifyDAO {
 	
 	public List<Song> getAllGenreSongs(String genre){
 		
-		final String sql = "SELECT * FROM top10s WHERE top_genre = ?";
+		final String sql = "SELECT DISTINCT * FROM top10s WHERE top_genre = ?";
 		
 		List<Song> songs = new ArrayList<>();
 		
@@ -113,7 +113,7 @@ public class SpotifyDAO {
 	}
 
 	public List<Song> getAllYearArtistSong(String artist, int year) {
-final String sql = "SELECT * FROM top10s WHERE artist = ? AND year = ?";
+final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ? AND year = ?";
 		
 		List<Song> songs = new ArrayList<>();
 		
@@ -141,7 +141,7 @@ final String sql = "SELECT * FROM top10s WHERE artist = ? AND year = ?";
 
 	public List<Song> getAllYearGenreSongs(String genre, int year) {
 		
-		final String sql = "SELECT * FROM top10s WHERE top_genre = ? AND year = ?";
+		final String sql = "SELECT DISTINCT * FROM top10s WHERE top_genre = ? AND year = ?";
 		
 		List<Song> songs = new ArrayList<>();
 		
@@ -168,7 +168,7 @@ final String sql = "SELECT * FROM top10s WHERE artist = ? AND year = ?";
 	}
 
 	public List<Song> getAllYearSongs(int year) {
-		final String sql = "SELECT * FROM top10s WHERE year = ?";
+		final String sql = "SELECT DISTINCT * FROM top10s WHERE year = ?";
 		
 		List<Song> songs = new ArrayList<>();
 		
