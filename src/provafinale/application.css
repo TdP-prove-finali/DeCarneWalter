@@ -22,6 +22,7 @@
 .text-area   {
     -fx-text-fill: white;
     -fx-font-family: "American Typewriter";
+    -fx-border-color: #191414;
 }
 
 .text-field {

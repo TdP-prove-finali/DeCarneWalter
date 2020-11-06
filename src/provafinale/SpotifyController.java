@@ -57,6 +57,12 @@ public class SpotifyController {
     private TextArea txtAreaRicerca;
 
     @FXML
+    private Text txtCanzoneFamosa;
+
+    @FXML
+    private Text txtDurataMedia;
+
+    @FXML
     private Tab tabGenera;
 
     @FXML
@@ -94,6 +100,9 @@ public class SpotifyController {
     
     @FXML
     private Text txtYearPieChart;
+    
+    @FXML
+    private Text txtDurataPlaylist;
 
     @FXML
     void doCancella(ActionEvent event) {
@@ -101,6 +110,8 @@ public class SpotifyController {
     	choiceBoxGenere.getSelectionModel().clearSelection();
     	choiceBoxAnno.getSelectionModel().clearSelection();
     	txtAreaRicerca.clear();
+    	txtCanzoneFamosa.setText("");
+    	txtDurataMedia.setText("");
     	
     	yearsBarChart.getData().clear();
     	artistiGrafico.clear();
@@ -111,11 +122,16 @@ public class SpotifyController {
     	
     	contatoreGrafico = 0;
     	
+    	yearsBarChart.setVisible(false);
+    	
     }
 
     @FXML
     void doCerca(ActionEvent event) {
     	txtAreaRicerca.clear();
+    	txtCanzoneFamosa.setText("");
+    	txtDurataMedia.setText("");
+    	
     	String artista = txtFieldArtista.getText();
     	String genere = choiceBoxGenere.getSelectionModel().getSelectedItem();
     	int anno = 0;
@@ -126,8 +142,9 @@ public class SpotifyController {
     	List<Song> canzoni = new ArrayList<>();
     	
     	if(!artista.equals("") && genere != null) {
-    		txtAreaRicerca.setText("E' possibile la ricerca per artista, per genere o per anno.\nE' inoltre possibile la ricerca per artista e anno  e per genere e anno.");
+    		txtAreaRicerca.setText("E' possibile la ricerca per artista, per genere o per anno.\nE' inoltre possibile la ricerca per artista e anno  e per genere e anno.\n");
     		yearsBarChart.getData().clear();
+    		yearsBarChart.setVisible(false);
     		genresPieChart.getData().clear();
     		txtYearPieChart.setText("");
     		return;
@@ -138,6 +155,7 @@ public class SpotifyController {
     			yearsBarChart.getData().clear();
     			genresPieChart.getData().clear();
     			txtYearPieChart.setText("");
+    			yearsBarChart.setVisible(false);
     		}
     		else {
     			canzoni = dao.getAllArtistSong(artista);
@@ -147,11 +165,13 @@ public class SpotifyController {
     		}
     		
         	if(canzoni.isEmpty()) {
-        		txtAreaRicerca.setText("Nessuna canzone trovata per l'artista cercato");
+        		txtAreaRicerca.setText("Nessuna canzone trovata per l'artista cercato\n");
+        		yearsBarChart.setVisible(false);
         	} else {
         		for(Song s : canzoni) {
             		txtAreaRicerca.appendText(s.getTitle()+" ("+s.getYear()+")\n");
             	}
+        		txtAreaRicerca.setText(txtAreaRicerca.getText().substring(0, txtAreaRicerca.getText().length()-1));
         	}
     	} 
     	
@@ -161,6 +181,7 @@ public class SpotifyController {
     			yearsBarChart.getData().clear();
     			genresPieChart.getData().clear();
     			txtYearPieChart.setText("");
+    			yearsBarChart.setVisible(false);
     		} else {
     			canzoni = dao.getAllGenreSongs(genere);
     			disegnaBarChartGenere(canzoni, genere);
@@ -168,11 +189,13 @@ public class SpotifyController {
     			txtYearPieChart.setText("");
     		}
     		if(canzoni.isEmpty()) {
-    			txtAreaRicerca.setText("Nessuna canzone di quel genere trovata per l'anno selezionato");
+    			txtAreaRicerca.setText("Nessuna canzone di quel genere trovata per l'anno selezionato\n");
+    			yearsBarChart.setVisible(false);
     		}
     		for(Song s : canzoni) {
     			txtAreaRicerca.appendText(s.getArtist()+" - "+s.getTitle()+" ("+s.getYear()+")\n");
     		}
+    		txtAreaRicerca.setText(txtAreaRicerca.getText().substring(0, txtAreaRicerca.getText().length()-1));
     	} else if(artista.equals("") && genere == null && anno!=0) {
     		canzoni = dao.getAllYearSongs(anno);
     		disegnaPieChart(canzoni, anno);
@@ -180,19 +203,25 @@ public class SpotifyController {
     		for(Song s : canzoni) {
     			txtAreaRicerca.appendText(s.getArtist()+" - "+s.getTitle()+"\n");
     		}
+    		txtAreaRicerca.setText(txtAreaRicerca.getText().substring(0, txtAreaRicerca.getText().length()-1));
     	}
     	else if (artista.equals("") && genere == null && anno == 0) {
-    		txtAreaRicerca.setText("Inserire un artista o un genere o un anno da cercare");
+    		txtAreaRicerca.setText("Inserire un artista o un genere o un anno da cercare\n");
     		yearsBarChart.getData().clear();
     		genresPieChart.getData().clear();
     		txtYearPieChart.setText("");
     	}
     	try {
-    		txtAreaRicerca.appendText("\nCanzone più popolare: "+model.canzonePiuPopolare(canzoni).getTitle().toUpperCase()+"\n");
+    		if(model.canzonePiuPopolare(canzoni).getTitle().length()>40) {
+    			txtCanzoneFamosa.setText(model.canzonePiuPopolare(canzoni).getTitle().substring(0, 40));
+    		} else {
+    			txtCanzoneFamosa.setText(model.canzonePiuPopolare(canzoni).getTitle());
+    		}
+    		
     		int durataMedia = model.durataMedia(canzoni);
     		int min = durataMedia/60;
     		int sec = durataMedia%60;
-    		txtAreaRicerca.appendText("Durata media: "+min+" minuti e "+sec+" secondi");
+    		txtDurataMedia.setText(min+" minuti e "+sec+" secondi");
     	} catch(NullPointerException e) {
     		
     	}
@@ -203,6 +232,8 @@ public class SpotifyController {
 	private void disegnaBarChartArtista(List<Song> canzoni, String artista) {
 		if(canzoni.isEmpty())
 			return;
+		
+		 yearsBarChart.setVisible(true);
 		
 		if(!artistiGrafico.contains(artista.toLowerCase())) {
 			artistiGrafico.add(artista.toLowerCase());
@@ -232,6 +263,8 @@ public class SpotifyController {
 	private void disegnaBarChartGenere(List<Song> canzoni, String genere) {
 		if(canzoni.isEmpty())
 			return;
+		
+		 yearsBarChart.setVisible(true);
 		
 		if(!generiGrafico.contains(genere.toLowerCase())) {
 			generiGrafico.add(genere.toLowerCase());
@@ -278,6 +311,7 @@ public class SpotifyController {
 	@FXML
     void doGenera(ActionEvent event) {
     	txtAreaGenera.clear();
+    	txtDurataPlaylist.setText("");
     	int durata = 0;
     	try {
     		durata = Integer.parseInt(txtFieldDurata.getText());
@@ -305,7 +339,7 @@ public class SpotifyController {
     		dur+=s.getDur();
     		txtAreaGenera.appendText(s.getTitle()+"\n");
     	}
-    	txtAreaGenera.appendText("\nLa playlist ha durata "+dur/60+" minuti e "+dur%60+" secondi");
+    	txtDurataPlaylist.setText(dur/60+" minuti e "+dur%60+" secondi");
     }
 
 	@FXML
@@ -317,6 +351,7 @@ public class SpotifyController {
     	radioBassa.setSelected(false);
     	radioAlta.setSelected(false);
     	txtAreaGenera.clear();
+    	txtDurataPlaylist.setText("");
     }
     
 
@@ -329,6 +364,8 @@ public class SpotifyController {
         assert buttonCancella != null : "fx:id=\"buttonCancella\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert buttonCerca != null : "fx:id=\"buttonCerca\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert txtAreaRicerca != null : "fx:id=\"txtAreaRicerca\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert txtCanzoneFamosa != null : "fx:id=\"txtCanzoneFamosa\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert txtDurataMedia != null : "fx:id=\"txtDurataMedia\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert tabGenera != null : "fx:id=\"tabGenera\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert txtFieldDurata != null : "fx:id=\"txtFieldDurata\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert sliderPopularity != null : "fx:id=\"sliderPopularity\" was not injected: check your FXML file 'Spotify.fxml'.";
@@ -341,6 +378,8 @@ public class SpotifyController {
         assert txtAreaGenera != null : "fx:id=\"txtAreaGenera\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert yearsBarChart != null : "fx:id=\"yearsBarChart\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert genresPieChart != null : "fx:id=\"genresPieChart\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert txtDurataPlaylist != null : "fx:id=\"txtDurataPlaylist\" was not injected: check your FXML file 'Spotify.fxml'.";
+
 
     	sliderPopularity.setValue(50);
     	sliderEnergy.setValue(50);
@@ -360,6 +399,7 @@ public class SpotifyController {
         artistiGrafico = new ArrayList<>();
         generiGrafico = new ArrayList<>();
         contatoreGrafico = 0;
+        yearsBarChart.setVisible(false);
     }
 
 }
