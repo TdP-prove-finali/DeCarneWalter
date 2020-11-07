@@ -353,6 +353,10 @@ public class SpotifyController {
     	
     	List<Song> risultato = model.generaPlaylistOttima(durata, popularity, energy, danceability);
     	
+    	if(risultato == null) {
+    		return;
+    	}
+    	
     	risultato.addAll(canzoniAggiunteManualmente);
     	canzoniAggiunteManualmente.clear();
     	

@@ -42,6 +42,9 @@ public class Model {
 		List<Song> parziale = new ArrayList<>();
 		List<Song> best = new ArrayList<>();
 		
+		if(durata<0)
+			return best;
+		
 		double indice = popularity + energy + danceability;
 		
 		cerca(parziale, best, durata, listaCanzoniAffini, indice);

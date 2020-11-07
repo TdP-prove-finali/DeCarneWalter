@@ -215,7 +215,7 @@
                                              </tickLabelFont></CategoryAxis>
                                       </xAxis>
                                       <yAxis>
-                                        <NumberAxis autoRanging="false" minorTickCount="1" minorTickVisible="false" side="LEFT" tickLabelRotation="-20.0" tickLength="20.0" tickMarkVisible="false" tickUnit="1.0" upperBound="10.0">
+                                        <NumberAxis autoRanging="false" minorTickCount="1" minorTickVisible="false" side="LEFT" tickLabelFill="WHITE" tickLabelRotation="-20.0" tickLength="20.0" tickMarkVisible="false" tickUnit="1.0" upperBound="10.0">
                                              <tickLabelFont>
                                                 <Font name="American Typewriter Bold" size="10.0" />
                                              </tickLabelFont></NumberAxis>

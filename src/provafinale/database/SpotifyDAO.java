@@ -61,7 +61,7 @@ public class SpotifyDAO {
 	
 	public List<Song> getAllArtistSong(String artist){
 		
-		final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ?";
+		final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ? ORDER BY title";
 		
 		List<Song> songs = new ArrayList<>();
 		
