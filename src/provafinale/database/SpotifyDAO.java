@@ -34,6 +34,31 @@ public class SpotifyDAO {
 		}
 	}
 	
+	
+	public List<String> getAllArtists(){
+		
+		final String sql = "SELECT DISTINCT artist FROM top10s ORDER BY artist";
+		
+		List<String> artisti = new ArrayList<>();
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				artisti.add(rs.getString("artist"));
+			}
+			conn.close();
+			return artisti;
+			
+		} catch (SQLException e) {
+			 e.printStackTrace();
+			throw new RuntimeException("Errore Db");
+		}
+	}
+	
+	
 	public List<Song> getAllArtistSong(String artist){
 		
 		final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ?";
@@ -193,36 +218,18 @@ final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ? AND year = ?"
 		}
 	}
 
-	public static List<Song> getCanzoniAffini(int durata, double popularity, double energy, double danceability,
-			boolean tollBassa, boolean tollAlta) {
+	public static List<Song> getCanzoniAffini(int durata, double popularity, double energy, double danceability) {
 		List<Song> canzoniAffini = new ArrayList<>();
 		final String sql = "SELECT * FROM top10s WHERE pop BETWEEN ? AND ? "
 				+ "AND nrgy BETWEEN ? AND ? "
 				+ "AND dnce BETWEEN ? AND ?";
 		
-		double popInf = 0.0;
-		double popSup = 0.0;
-		double nrgyInf = 0.0;
-		double nrgySup = 0.0;
-		double dnceInf = 0.0;
-		double dnceSup = 0.0;
-		
-		if(tollBassa == true) {
-			popInf = popularity - 5;
-			popSup = popularity + 5;
-			nrgyInf = energy - 5;
-			nrgySup = energy + 5;
-			dnceInf = danceability - 5;
-			dnceSup = danceability + 5;
-			
-		} else {
-			popInf = popularity - 5;
-			popSup = popularity + 5;
-			nrgyInf = energy - 5;
-			nrgySup = energy + 5;
-			dnceInf = danceability - 5;
-			dnceSup = danceability + 5;
-		}
+		double popInf = popularity - 5;
+		double popSup = popularity + 5;
+		double nrgyInf = energy - 5;
+		double nrgySup = energy + 5;
+		double dnceInf = danceability - 5;
+		double dnceSup = danceability + 5;
 		
 		try {
 			Connection conn = DBConnect.getConnection();

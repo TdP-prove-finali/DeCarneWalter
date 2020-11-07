@@ -2,9 +2,7 @@ package provafinale;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,11 +11,9 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
@@ -37,6 +33,8 @@ public class SpotifyController {
 	List<String> artistiGrafico;
 	List<String> generiGrafico;
 	int contatoreGrafico;
+	
+	List<Song> canzoniAggiunteManualmente;
 
     @FXML
     private Tab tabRicerca;
@@ -81,12 +79,6 @@ public class SpotifyController {
     private Slider sliderDanceability;
 
     @FXML
-    private RadioButton radioBassa;
-
-    @FXML
-    private RadioButton radioAlta;
-
-    @FXML
     private Button buttonReset;
 
     @FXML
@@ -106,6 +98,22 @@ public class SpotifyController {
     
     @FXML
     private Text txtDurataPlaylist;
+    
+    @FXML
+    private ChoiceBox<String> choiceBoxArtista;
+    
+    @FXML
+    private Button btnSelezionaArtista;
+
+    @FXML
+    private Button btnCancellaSelezione;
+
+    @FXML
+    private ChoiceBox<Song> choiceBoxCanzone;
+    
+
+    @FXML
+    private Button btnAggiungi;
     
     @FXML
     private PieChart pieChartPlaylist;
@@ -326,19 +334,27 @@ public class SpotifyController {
     		return;
     	}
     	
+    	if(durata<0) {
+    		txtAreaGenera.setText("Valore durata non valido\n");
+    		return;
+    	}
+    	
     	double popularity = sliderPopularity.getValue();
     	double energy = sliderEnergy.getValue();
     	double danceability = sliderDanceability.getValue();
     	
-    	boolean tollBassa = radioBassa.isSelected();
-    	boolean tollAlta = radioAlta.isSelected();
+    	durata = durata*60;
     	
-    	if(tollBassa == false && tollAlta == false) {
-    		txtAreaGenera.appendText("Selezionare la tolleranza");
-    		return;
+    	if(!canzoniAggiunteManualmente.isEmpty()) {
+    		for(Song s : canzoniAggiunteManualmente) {
+        			durata -= s.getDur();
+        	}
     	}
     	
-    	List<Song> risultato = model.generaPlaylistOttima(durata, popularity, energy, danceability, tollBassa, tollAlta);
+    	List<Song> risultato = model.generaPlaylistOttima(durata, popularity, energy, danceability);
+    	
+    	risultato.addAll(canzoniAggiunteManualmente);
+    	canzoniAggiunteManualmente.clear();
     	
     	int dur = 0;
     	for(Song s : risultato) {
@@ -371,11 +387,64 @@ public class SpotifyController {
     	sliderEnergy.setValue(50);
     	sliderDanceability.setValue(50);
     	txtFieldDurata.clear();
-    	radioBassa.setSelected(false);
-    	radioAlta.setSelected(false);
     	txtAreaGenera.clear();
     	txtDurataPlaylist.setText("");
     	pieChartPlaylist.getData().clear();
+    	canzoniAggiunteManualmente.clear();
+    }
+	
+    @FXML
+    void doSelezionaArtista(ActionEvent event) {
+    	String artista = choiceBoxArtista.getSelectionModel().getSelectedItem();
+    	choiceBoxCanzone.setDisable(false);
+    	btnAggiungi.setDisable(false);
+    	ObservableList<Song> canzoni = FXCollections.observableArrayList();
+    	canzoni.addAll(dao.getAllArtistSong(artista));
+    	choiceBoxCanzone.setItems(canzoni);
+    }
+	
+    @FXML
+    void doCancellaSelezione(ActionEvent event) {
+    	choiceBoxArtista.getSelectionModel().clearSelection();
+    	choiceBoxCanzone.getSelectionModel().clearSelection();;
+    	choiceBoxCanzone.setDisable(true);
+    	btnAggiungi.setDisable(true);
+    }
+    
+    @FXML
+    void doAggiungi(ActionEvent event) {
+    	if(canzoniAggiunteManualmente.isEmpty()) {
+    		doReset(event);
+    	}
+    	Song canzoneSelezionata;
+    	try {
+    		canzoneSelezionata = choiceBoxCanzone.getSelectionModel().getSelectedItem();
+    		
+    		if(canzoneSelezionata == null) {
+    			return;
+    		}
+    		
+    		if(!canzoniAggiunteManualmente.contains(canzoneSelezionata)) {
+    			canzoniAggiunteManualmente.add(canzoneSelezionata);
+            	txtAreaGenera.appendText(canzoneSelezionata.getArtist()+" - "+canzoneSelezionata.getTitle()+"\n");
+    		}
+    			
+    	} catch (NullPointerException e) {
+    		return;
+    	}
+    	
+    	choiceBoxCanzone.getSelectionModel().clearSelection();
+    	choiceBoxArtista.getSelectionModel().clearSelection();
+    	choiceBoxCanzone.setDisable(true);
+    	btnAggiungi.setDisable(true);
+    	
+    	int durata = 0;
+    	for(Song s : canzoniAggiunteManualmente) {
+    		durata += s.getDur();
+    	}
+    	txtDurataPlaylist.setText(durata/60+" minuti e "+durata%60+" secondi");
+    	
+    	disegnaPieChartPlaylist(canzoniAggiunteManualmente);
     }
     
 
@@ -395,14 +464,17 @@ public class SpotifyController {
         assert sliderPopularity != null : "fx:id=\"sliderPopularity\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert sliderEnergy != null : "fx:id=\"sliderEnergy\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert sliderDanceability != null : "fx:id=\"sliderDanceability\" was not injected: check your FXML file 'Spotify.fxml'.";
-        assert radioBassa != null : "fx:id=\"radioBassa\" was not injected: check your FXML file 'Spotify.fxml'.";
-        assert radioAlta != null : "fx:id=\"radioAlta\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert buttonReset != null : "fx:id=\"buttonReset\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert buttonGenera != null : "fx:id=\"buttonGenera\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert txtAreaGenera != null : "fx:id=\"txtAreaGenera\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert yearsBarChart != null : "fx:id=\"yearsBarChart\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert genresPieChart != null : "fx:id=\"genresPieChart\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert txtDurataPlaylist != null : "fx:id=\"txtDurataPlaylist\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert choiceBoxArtista != null : "fx:id=\"choiceBoxArtista\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert btnSelezionaArtista != null : "fx:id=\"btnSelezionaArtista\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert btnCancellaSelezione != null : "fx:id=\"btnCancellaSelezione\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert choiceBoxCanzone != null : "fx:id=\"choiceBoxCanzone\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert btnAggiungi != null : "fx:id=\"btnAggiungi\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert pieChartPlaylist != null : "fx:id=\"pieChartPlaylist\" was not injected: check your FXML file 'Spotify.fxml'.";
 
 
@@ -421,10 +493,16 @@ public class SpotifyController {
         choiceBoxGenere.setItems(generi);
         choiceBoxAnno.setItems(anni);
         
+        ObservableList<String> artisti = FXCollections.observableArrayList();
+        artisti.addAll(dao.getAllArtists());
+        choiceBoxArtista.setItems(artisti);
+        
         artistiGrafico = new ArrayList<>();
         generiGrafico = new ArrayList<>();
         contatoreGrafico = 0;
         yearsBarChart.setVisible(false);
+        
+        canzoniAggiunteManualmente = new ArrayList<>();
     }
 
 }

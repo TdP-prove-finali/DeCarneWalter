@@ -33,12 +33,11 @@ public class Model {
 		return durataSum/canzoni.size();
 	}
 
-	public List<Song> generaPlaylistOttima(int durata, double popularity, double energy, double danceability,
-			boolean tollBassa, boolean tollAlta) {
+	public List<Song> generaPlaylistOttima(int durata, double popularity, double energy, double danceability) {
 		
 		affinitaMin = Integer.MAX_VALUE;
 		
-		List<Song> listaCanzoniAffini = SpotifyDAO.getCanzoniAffini(durata, popularity, energy, danceability, tollBassa, tollAlta);
+		List<Song> listaCanzoniAffini = SpotifyDAO.getCanzoniAffini(durata, popularity, energy, danceability);
 		
 		List<Song> parziale = new ArrayList<>();
 		List<Song> best = new ArrayList<>();
@@ -68,7 +67,7 @@ public class Model {
 			affinitaTot += Math.abs(s.getAffinita()-indice);
 		}
 		
-			if (sommaDurata>=(durata*60)-300 && sommaDurata<=(durata*60)+300) {
+			if (sommaDurata>=(durata)-300 && sommaDurata<=(durata)+300) {
 				
 				if(affinitaTot<affinitaMin) {
 					affinitaMin = affinitaTot;
