@@ -61,7 +61,7 @@ public class SpotifyDAO {
 	
 	public List<Song> getAllArtistSong(String artist){
 		
-		final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ? ORDER BY title";
+		final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ? GROUP BY title";
 		
 		List<Song> songs = new ArrayList<>();
 		
@@ -218,7 +218,7 @@ final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ? AND year = ?"
 		}
 	}
 
-	public static List<Song> getCanzoniAffini(int durata, double popularity, double energy, double danceability) {
+	public List<Song> getCanzoniAffini(int durata, double popularity, double energy, double danceability) {
 		List<Song> canzoniAffini = new ArrayList<>();
 		final String sql = "SELECT * FROM top10s WHERE pop BETWEEN ? AND ? "
 				+ "AND nrgy BETWEEN ? AND ? "

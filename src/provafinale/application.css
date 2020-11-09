@@ -12,7 +12,8 @@
 
 .tab{
 -fx-background-color:   #1db954;
--fx-font: 14px "American Typewriter";
+-fx-font-family: "American Typewriter";
+-fx-font-size: 14px;
 }
 
 .text-area .content {
@@ -48,17 +49,6 @@
     -fx-border-color: transparent;
 }
 
-.chart-pie-label-line {
-    -fx-stroke: white;
-    -fx-fill: white;
-}
-
-.chart-pie-label {
-    -fx-fill: #1db954;
-    -fx-font-size: 1em;
-    -fx-font-family: "American Typewriter";
-} 
-
 .chart-legend-item{
 	-fx-font-family: "American Typewriter";
 }
@@ -86,6 +76,13 @@
 .choice-box > .label{
 	-fx-font-family: "American Typewriter";
 }
+
+.default-color0.chart-pie { -fx-pie-color: #00bfff; }
+.default-color1.chart-pie { -fx-pie-color: #ff1e00; }
+.default-color2.chart-pie { -fx-pie-color: #4dd313; }
+.default-color3.chart-pie { -fx-pie-color: #ffe000; }
+.default-color4.chart-pie { -fx-pie-color: #ff7800; }
+.default-color5.chart-pie {-fx-pie-color: #b500ff;}
 
 
 

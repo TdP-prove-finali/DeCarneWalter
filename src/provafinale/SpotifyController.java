@@ -357,15 +357,16 @@ public class SpotifyController {
     		return;
     	}
     	
-    	risultato.addAll(canzoniAggiunteManualmente);
-    	canzoniAggiunteManualmente.clear();
+    	List<Song> playlistFinale = new ArrayList<>();
+    	playlistFinale.addAll(canzoniAggiunteManualmente);
+    	playlistFinale.addAll(risultato);
     	
     	int dur = 0;
-    	for(Song s : risultato) {
+    	for(Song s : playlistFinale) {
     		dur+=s.getDur();
     		txtAreaGenera.appendText(s.getArtist()+" - "+s.getTitle()+"\n");
     	}
-    	disegnaPieChartPlaylist(risultato);
+    	disegnaPieChartPlaylist(playlistFinale);
     	txtDurataPlaylist.setText(dur/60+" minuti e "+dur%60+" secondi");
     }
 	
@@ -394,12 +395,25 @@ public class SpotifyController {
     	txtAreaGenera.clear();
     	txtDurataPlaylist.setText("");
     	pieChartPlaylist.getData().clear();
-    	canzoniAggiunteManualmente.clear();
+    	
+    	if(!canzoniAggiunteManualmente.isEmpty()) {
+    		int durata=0;
+    		for(Song s : canzoniAggiunteManualmente) {
+    			txtAreaGenera.appendText(s.getArtist()+" - "+s.getTitle()+"\n");
+    			durata+=s.getDur();
+    		}
+    		
+    		txtDurataPlaylist.setText(durata/60+" minuti e "+durata%60+" secondi");
+    		disegnaPieChartPlaylist(canzoniAggiunteManualmente);
+    	}
     }
 	
     @FXML
     void doSelezionaArtista(ActionEvent event) {
     	String artista = choiceBoxArtista.getSelectionModel().getSelectedItem();
+    	if(artista==null) {
+    		return;
+    	}
     	choiceBoxCanzone.setDisable(false);
     	btnAggiungi.setDisable(false);
     	ObservableList<Song> canzoni = FXCollections.observableArrayList();
@@ -413,6 +427,10 @@ public class SpotifyController {
     	choiceBoxCanzone.getSelectionModel().clearSelection();;
     	choiceBoxCanzone.setDisable(true);
     	btnAggiungi.setDisable(true);
+    	canzoniAggiunteManualmente.clear();
+    	txtAreaGenera.clear();
+    	txtDurataPlaylist.setText("");
+    	pieChartPlaylist.getData().clear();
     }
     
     @FXML

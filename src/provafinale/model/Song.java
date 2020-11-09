@@ -114,7 +114,6 @@ public class Song {
 		int result = 1;
 		result = prime * result + ((artist == null) ? 0 : artist.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + year;
 		return result;
 	}
 
@@ -137,10 +136,10 @@ public class Song {
 				return false;
 		} else if (!title.equals(other.title))
 			return false;
-		if (year != other.year)
-			return false;
 		return true;
 	}
+
+
 	
 	
 	

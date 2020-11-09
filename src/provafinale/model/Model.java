@@ -11,6 +11,7 @@ import provafinale.database.SpotifyDAO;
 public class Model {
 	
 	int affinitaMin;
+	SpotifyDAO dao = new SpotifyDAO();
 	
 	public Song canzonePiuPopolare (List<Song> canzoni) {
 		int maxPop = 0;
@@ -37,17 +38,24 @@ public class Model {
 		
 		affinitaMin = Integer.MAX_VALUE;
 		
-		List<Song> listaCanzoniAffini = SpotifyDAO.getCanzoniAffini(durata, popularity, energy, danceability);
+		List<Song> listaCanzoniAffini = dao.getCanzoniAffini(durata, popularity, energy, danceability);
 		
 		List<Song> parziale = new ArrayList<>();
 		List<Song> best = new ArrayList<>();
+		
+		int sommaDurata = 0;
+		int affinitaTot = 0;
 		
 		if(durata<0)
 			return best;
 		
 		double indice = popularity + energy + danceability;
 		
-		cerca(parziale, best, durata, listaCanzoniAffini, indice);
+		cerca(parziale, best, durata, listaCanzoniAffini, indice, sommaDurata, affinitaTot);
+		
+		if(best.isEmpty()) {
+			return listaCanzoniAffini;
+		}
 		
 		for(Song s : best) {
 			System.out.println(s.getTitle());
@@ -59,34 +67,32 @@ public class Model {
 		
 	}
 	
-	private void cerca(List<Song> parziale, List<Song> best, int durata, List<Song> lista, double indice) {
-		int sommaDurata = 0;
-		int affinitaTot = 0;
+	private void cerca(List<Song> parziale, List<Song> best, int durata, List<Song> lista, double indice, int sommaDurata, int affinitaTot) {
 		
-		
-		//caso terminale
-		for(Song s : parziale) {
-			sommaDurata+= s.getDur();
-			affinitaTot += Math.abs(s.getAffinita()-indice);
-		}
-		
+			//caso terminale
 			if (sommaDurata>=(durata)-300 && sommaDurata<=(durata)+300) {
-				
+				//System.out.println("ciao");
 				if(affinitaTot<affinitaMin) {
 					affinitaMin = affinitaTot;
+					affinitaTot = 0;
+					sommaDurata = 0;
 					best.clear();
 					best.addAll(parziale);
 				}
 				return;
 			}
 				for(Song song : lista) {
+					//System.out.println(sommaDurata);
 					if (!parziale.contains(song)) {
 						parziale.add(song);
-						cerca(parziale, best, durata, lista, indice);
+						sommaDurata += song.getDur();
+						affinitaTot += Math.abs(song.getAffinita()-indice);
+						cerca(parziale, best, durata, lista, indice, sommaDurata, affinitaTot);
 						parziale.remove(parziale.size()-1);
+						sommaDurata-=song.getDur();
+						affinitaTot-= Math.abs(song.getAffinita()-indice);
 					}
 				}
-
 		}
 	
 	
