@@ -3,8 +3,10 @@ package provafinale.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import provafinale.database.SpotifyDAO;
 
@@ -12,6 +14,9 @@ public class Model {
 	
 	int affinitaMin;
 	SpotifyDAO dao = new SpotifyDAO();
+	
+	Set<Song> best = new HashSet<>();
+	Set<Set<Song>> parzialeGiaAnalizzato = new HashSet<>();
 	
 	public Song canzonePiuPopolare (List<Song> canzoni) {
 		int maxPop = 0;
@@ -34,14 +39,32 @@ public class Model {
 		return durataSum/canzoni.size();
 	}
 
-	public List<Song> generaPlaylistOttima(int durata, double popularity, double energy, double danceability) {
+	public Set<Song> generaPlaylistOttima(int durata, double popularity, double energy, double danceability) {
+		
+		long start = System.currentTimeMillis();
 		
 		affinitaMin = Integer.MAX_VALUE;
 		
-		List<Song> listaCanzoniAffini = dao.getCanzoniAffini(durata, popularity, energy, danceability);
+		parzialeGiaAnalizzato.clear();
 		
-		List<Song> parziale = new ArrayList<>();
-		List<Song> best = new ArrayList<>();
+		List<Song> canzoniEstratte = new ArrayList<>(dao.getCanzoniAffini(durata, popularity, energy, danceability));
+		Set<Song> listaCanzoniAffini = new HashSet<>();
+		
+		System.out.println("Num canzoni prima: "+canzoniEstratte.size());
+		if (canzoniEstratte.size()>20) {
+			listaCanzoniAffini.addAll(canzoniEstratte.subList(0, 21));
+		} else {
+			listaCanzoniAffini.addAll(canzoniEstratte);
+		}
+		
+		System.out.println("Num canzoni: "+listaCanzoniAffini.size());
+		
+		for(Song s : listaCanzoniAffini) {
+			System.out.println(s.getArtist()+" - "+s.getTitle()+" - "+s.calcolaIndice(popularity+energy+danceability)+" - "+s.getDur()/60+" min e "+s.getDur()%60+" sec");
+		}
+		
+		best = new HashSet<>();
+		Set<Song> parziale = new HashSet<>();
 		
 		int sommaDurata = 0;
 		int affinitaTot = 0;
@@ -51,15 +74,15 @@ public class Model {
 		
 		double indice = popularity + energy + danceability;
 		
-		cerca(parziale, best, durata, listaCanzoniAffini, indice, sommaDurata, affinitaTot);
+		cerca(parziale, durata, listaCanzoniAffini, indice, sommaDurata, affinitaTot);
 		
 		if(best.isEmpty()) {
 			return listaCanzoniAffini;
 		}
 		
-		for(Song s : best) {
-			System.out.println(s.getTitle());
-		}
+		long end = System.currentTimeMillis();
+		
+		System.out.println("Durata: "+(int)(end-start)/1000+" s");
 		
 		
 		return best;
@@ -67,17 +90,16 @@ public class Model {
 		
 	}
 	
-	private void cerca(List<Song> parziale, List<Song> best, int durata, List<Song> lista, double indice, int sommaDurata, int affinitaTot) {
+	private void cerca(Set<Song> parziale, int durata, Set<Song> lista, double indice, int sommaDurata, int affinitaTot) {
 		
 			//caso terminale
-			if (sommaDurata>=(durata)-300 && sommaDurata<=(durata)+300) {
-				//System.out.println("ciao");
+			if (sommaDurata>=(durata)-180 && sommaDurata<=(durata)+180) {
 				if(affinitaTot<affinitaMin) {
 					affinitaMin = affinitaTot;
 					affinitaTot = 0;
 					sommaDurata = 0;
-					best.clear();
-					best.addAll(parziale);
+					this.best.clear();
+					this.best.addAll(parziale);
 				}
 				return;
 			}
@@ -85,17 +107,34 @@ public class Model {
 					//System.out.println(sommaDurata);
 					if (!parziale.contains(song)) {
 						parziale.add(song);
-						sommaDurata += song.getDur();
-						affinitaTot += Math.abs(song.getAffinita()-indice);
-						cerca(parziale, best, durata, lista, indice, sommaDurata, affinitaTot);
-						parziale.remove(parziale.size()-1);
-						sommaDurata-=song.getDur();
-						affinitaTot-= Math.abs(song.getAffinita()-indice);
+						if(aggiuntaValida(parziale)) {
+							parzialeGiaAnalizzato.add(parziale);
+							sommaDurata += song.getDur();
+							affinitaTot += Math.abs(song.getAffinita()-indice);
+							cerca(parziale, durata, lista, indice, sommaDurata, affinitaTot);
+							parziale.remove(song);
+							sommaDurata -= song.getDur();
+							affinitaTot -= Math.abs(song.getAffinita()-indice);
+						}
+						else {
+							parziale.remove(song);
+						}
+						
+						
 					}
+					
 				}
 		}
 	
 	
+	private boolean aggiuntaValida(Set<Song> parziale) {
+			if(parzialeGiaAnalizzato.contains(parziale)) {
+				return false;
+			}
+			
+		return true;
+	}
+
 	public List<Genre> generaGraficoPlaylist(List<Song> canzoni) {
 		if(canzoni.isEmpty()) {
 			return null;

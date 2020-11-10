@@ -3,6 +3,7 @@ package provafinale;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -165,14 +166,14 @@ public class SpotifyController {
     	}
     	else if(!artista.equals("") && genere==null) {
     		if(anno!=0) {
-    			canzoni = dao.getAllYearArtistSong(artista, anno);
+    			canzoni = dao.getAllYearArtistSongs(artista, anno);
     			yearsBarChart.getData().clear();
     			genresPieChart.getData().clear();
     			txtYearPieChart.setText("");
     			yearsBarChart.setVisible(false);
     		}
     		else {
-    			canzoni = dao.getAllArtistSong(artista);
+    			canzoni = dao.getAllArtistSongs(artista);
     			disegnaBarChartArtista(canzoni, artista);
     			genresPieChart.getData().clear();
     			txtYearPieChart.setText("");
@@ -261,12 +262,12 @@ public class SpotifyController {
     	 XYChart.Series<String, Integer> series = new Series<>();
     	 series.setName(artista);
     	 contatoreGrafico++;
-    		for(int i=2010; i<=2019; i++) {
-        		series.getData().add(new XYChart.Data<String, Integer>(i+"", 0));
+    		for(int year : anni) {
+        		series.getData().add(new XYChart.Data<String, Integer>(year+"", 0));
         		}
     		
     	for(Song s : canzoni) {
-    		series.getData().add(new XYChart.Data<String, Integer>(s.getYear()+"", dao.getAllYearArtistSong(s.getArtist(), s.getYear()).size()));
+    		series.getData().add(new XYChart.Data<String, Integer>(s.getYear()+"", dao.getAllYearArtistSongs(s.getArtist(), s.getYear()).size()));
     		}
     	
     	 yearsBarChart.getData().addAll(series);
@@ -294,8 +295,8 @@ public class SpotifyController {
     	 XYChart.Series<String, Integer> series = new Series<>();
     	 series.setName(genere);
     	 contatoreGrafico++;
-    		for(int i=2010; i<=2019; i++) {
-        		series.getData().add(new XYChart.Data<String, Integer>(i+"", 0));
+    		for(int year : anni) {
+        		series.getData().add(new XYChart.Data<String, Integer>(year+"", 0));
         		}
     		
     	for(Song s : canzoni) {
@@ -351,7 +352,7 @@ public class SpotifyController {
         	}
     	}
     	
-    	List<Song> risultato = model.generaPlaylistOttima(durata, popularity, energy, danceability);
+    	Set<Song> risultato = model.generaPlaylistOttima(durata, popularity, energy, danceability);
     	
     	if(risultato == null) {
     		return;
@@ -364,7 +365,7 @@ public class SpotifyController {
     	int dur = 0;
     	for(Song s : playlistFinale) {
     		dur+=s.getDur();
-    		txtAreaGenera.appendText(s.getArtist()+" - "+s.getTitle()+"\n");
+    		txtAreaGenera.appendText(s.getArtist()+" - "+s.getTitle()+" - "+s.calcolaIndice(popularity+energy+danceability)+"\n");
     	}
     	disegnaPieChartPlaylist(playlistFinale);
     	txtDurataPlaylist.setText(dur/60+" minuti e "+dur%60+" secondi");
@@ -417,7 +418,7 @@ public class SpotifyController {
     	choiceBoxCanzone.setDisable(false);
     	btnAggiungi.setDisable(false);
     	ObservableList<Song> canzoni = FXCollections.observableArrayList();
-    	canzoni.addAll(dao.getAllArtistSong(artista));
+    	canzoni.addAll(dao.getAllArtistSongs(artista));
     	choiceBoxCanzone.setItems(canzoni);
     }
 	

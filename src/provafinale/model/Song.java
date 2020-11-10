@@ -1,6 +1,6 @@
 package provafinale.model;
 
-public class Song {
+public class Song{
 	
 	int id;
 	String title; 
@@ -102,6 +102,12 @@ public class Song {
 		int affinita = nrgy + dnce + pop;
 		return affinita;
 	}
+	
+	public double calcolaIndice(double indice) {
+		double valoreIndice = this.pop+this.nrgy+this.dnce;
+		double index = Math.abs(indice - valoreIndice);
+		return Math.round(index * 100.0) / 100.0;
+	}
 
 	@Override
 	public String toString() {
@@ -138,12 +144,4 @@ public class Song {
 			return false;
 		return true;
 	}
-
-
-	
-	
-	
-	
-	
-
 }
