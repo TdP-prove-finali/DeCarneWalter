@@ -103,9 +103,9 @@ public class Song{
 		return affinita;
 	}
 	
-	public double calcolaIndice(double indice) {
-		double valoreIndice = this.pop+this.nrgy+this.dnce;
-		double index = Math.abs(indice - valoreIndice);
+	public double calcolaIndice(double indiceInserito) {
+		double indiceCanzone = this.pop+this.nrgy+this.dnce;
+		double index = Math.abs(indiceInserito - indiceCanzone);
 		return Math.round(index * 100.0) / 100.0;
 	}
 

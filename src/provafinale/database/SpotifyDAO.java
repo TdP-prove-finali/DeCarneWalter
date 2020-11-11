@@ -222,7 +222,7 @@ final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ? AND year = ? 
 		List<Song> canzoniAffini = new ArrayList<>();
 		final String sql = "SELECT * FROM top10s WHERE pop BETWEEN ? AND ? "
 				+ "AND nrgy BETWEEN ? AND ? "
-				+ "AND dnce BETWEEN ? AND ?";
+				+ "AND dnce BETWEEN ? AND ? GROUP BY title";
 		
 		double popInf = popularity - 5;
 		double popSup = popularity + 5;

@@ -101,6 +101,9 @@ public class SpotifyController {
     private Text txtDurataPlaylist;
     
     @FXML
+    private Text txtNumeroCanzoni;
+    
+    @FXML
     private ChoiceBox<String> choiceBoxArtista;
     
     @FXML
@@ -118,6 +121,7 @@ public class SpotifyController {
     
     @FXML
     private PieChart pieChartPlaylist;
+
 
     @FXML
     void doCancella(ActionEvent event) {
@@ -327,16 +331,23 @@ public class SpotifyController {
     void doGenera(ActionEvent event) {
     	txtAreaGenera.clear();
     	txtDurataPlaylist.setText("");
+    	txtNumeroCanzoni.setText("");
+    	pieChartPlaylist.getData().clear();
     	int durata = 0;
     	try {
     		durata = Integer.parseInt(txtFieldDurata.getText());
     	} catch (NumberFormatException e) {
-    		txtAreaGenera.appendText("Inserire nel campo \"Durata\" i minuti di durata massima della playlist");
+    		txtAreaGenera.appendText("Inserire nel campo Durata i minuti di durata massima della playlist");
     		return;
     	}
     	
     	if(durata<0) {
     		txtAreaGenera.setText("Valore durata non valido\n");
+    		return;
+    	}
+    	
+    	if(durata<4) {
+    		txtAreaGenera.setText("Valore durata troppo basso\n");
     		return;
     	}
     	
@@ -357,6 +368,15 @@ public class SpotifyController {
     	if(risultato == null) {
     		return;
     	}
+    
+    	
+    	int duplicati = 0;
+    	for(Song s : canzoniAggiunteManualmente) {
+    		if(risultato.contains(s)) {
+    			risultato.remove(s);
+    			duplicati++;
+    		}
+    	}
     	
     	List<Song> playlistFinale = new ArrayList<>();
     	playlistFinale.addAll(canzoniAggiunteManualmente);
@@ -365,10 +385,29 @@ public class SpotifyController {
     	int dur = 0;
     	for(Song s : playlistFinale) {
     		dur+=s.getDur();
-    		txtAreaGenera.appendText(s.getArtist()+" - "+s.getTitle()+" - "+s.calcolaIndice(popularity+energy+danceability)+"\n");
+    		txtAreaGenera.appendText(s.getArtist()+" - "+s.getTitle()+"\n");
     	}
+    	
+    	if(duplicati!=0) {
+    		txtAreaGenera.appendText("\nSono stati rimossi "+duplicati+" duplicati\n");
+    	}
+    	
+    	txtAreaGenera.setText(txtAreaGenera.getText().substring(0, txtAreaGenera.getText().length()-1));
     	disegnaPieChartPlaylist(playlistFinale);
-    	txtDurataPlaylist.setText(dur/60+" minuti e "+dur%60+" secondi");
+    	
+    	int min = dur/60;
+    	int sec = dur%60;
+    	int numCanzoni = playlistFinale.size();
+    	
+    	txtNumeroCanzoni.setText(""+numCanzoni);
+    	
+    	if (sec == 1) {
+    		txtDurataPlaylist.setText(min+" minuti e "+sec+" secondo");
+    		return;
+    	}
+    	
+    	txtDurataPlaylist.setText(min+" minuti e "+sec+" secondi");
+    	
     }
 	
 	private void disegnaPieChartPlaylist(List<Song> canzoni) {
@@ -395,6 +434,7 @@ public class SpotifyController {
     	txtFieldDurata.clear();
     	txtAreaGenera.clear();
     	txtDurataPlaylist.setText("");
+    	txtNumeroCanzoni.setText("");
     	pieChartPlaylist.getData().clear();
     	
     	if(!canzoniAggiunteManualmente.isEmpty()) {
@@ -405,6 +445,7 @@ public class SpotifyController {
     		}
     		
     		txtDurataPlaylist.setText(durata/60+" minuti e "+durata%60+" secondi");
+    		txtNumeroCanzoni.setText(""+canzoniAggiunteManualmente.size());
     		disegnaPieChartPlaylist(canzoniAggiunteManualmente);
     	}
     }
@@ -432,13 +473,14 @@ public class SpotifyController {
     	txtAreaGenera.clear();
     	txtDurataPlaylist.setText("");
     	pieChartPlaylist.getData().clear();
+    	txtNumeroCanzoni.setText("");
     }
     
     @FXML
     void doAggiungi(ActionEvent event) {
-    	if(canzoniAggiunteManualmente.isEmpty()) {
+    	
     		doReset(event);
-    	}
+   
     	Song canzoneSelezionata;
     	try {
     		canzoneSelezionata = choiceBoxCanzone.getSelectionModel().getSelectedItem();
@@ -449,7 +491,6 @@ public class SpotifyController {
     		
     		if(!canzoniAggiunteManualmente.contains(canzoneSelezionata)) {
     			canzoniAggiunteManualmente.add(canzoneSelezionata);
-            	txtAreaGenera.appendText(canzoneSelezionata.getArtist()+" - "+canzoneSelezionata.getTitle()+"\n");
     		}
     			
     	} catch (NullPointerException e) {
@@ -462,10 +503,16 @@ public class SpotifyController {
     	btnAggiungi.setDisable(true);
     	
     	int durata = 0;
+    	txtAreaGenera.clear();
     	for(Song s : canzoniAggiunteManualmente) {
     		durata += s.getDur();
+    		txtAreaGenera.appendText(s.getArtist()+" - "+s.getTitle()+"\n");
     	}
+    	
+    	txtAreaGenera.setText(txtAreaGenera.getText().substring(0, txtAreaGenera.getText().length()-1));
+    	
     	txtDurataPlaylist.setText(durata/60+" minuti e "+durata%60+" secondi");
+    	txtNumeroCanzoni.setText(canzoniAggiunteManualmente.size()+"");
     	
     	disegnaPieChartPlaylist(canzoniAggiunteManualmente);
     }
@@ -493,6 +540,7 @@ public class SpotifyController {
         assert yearsBarChart != null : "fx:id=\"yearsBarChart\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert genresPieChart != null : "fx:id=\"genresPieChart\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert txtDurataPlaylist != null : "fx:id=\"txtDurataPlaylist\" was not injected: check your FXML file 'Spotify.fxml'.";
+        assert txtNumeroCanzoni != null : "fx:id=\"txtNumeroCanzoni\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert choiceBoxArtista != null : "fx:id=\"choiceBoxArtista\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert btnSelezionaArtista != null : "fx:id=\"btnSelezionaArtista\" was not injected: check your FXML file 'Spotify.fxml'.";
         assert btnCancellaSelezione != null : "fx:id=\"btnCancellaSelezione\" was not injected: check your FXML file 'Spotify.fxml'.";

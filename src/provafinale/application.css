@@ -83,6 +83,12 @@
 .default-color3.chart-pie { -fx-pie-color: #ffe000; }
 .default-color4.chart-pie { -fx-pie-color: #ff7800; }
 .default-color5.chart-pie {-fx-pie-color: #b500ff;}
+.default-color6.chart-pie { -fx-pie-color: #1c139a; }
+.default-color7.chart-pie { -fx-pie-color: #969494; }
+.default-color8.chart-pie {-fx-pie-color: #f489c0;}
+.default-color9.chart-pie { -fx-pie-color: #57e7bc; }
+.default-color10.chart-pie {-fx-pie-color: #9d4018;}
+.default-color11.chart-pie { -fx-pie-color: #ffffff; }
 
 
 

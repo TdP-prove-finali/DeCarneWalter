@@ -51,17 +51,14 @@ public class Model {
 		Set<Song> listaCanzoniAffini = new HashSet<>();
 		
 		System.out.println("Num canzoni prima: "+canzoniEstratte.size());
+		
 		if (canzoniEstratte.size()>20) {
-			listaCanzoniAffini.addAll(canzoniEstratte.subList(0, 21));
+			listaCanzoniAffini.addAll(canzoniEstratte.subList(0, 20));
 		} else {
 			listaCanzoniAffini.addAll(canzoniEstratte);
 		}
 		
 		System.out.println("Num canzoni: "+listaCanzoniAffini.size());
-		
-		for(Song s : listaCanzoniAffini) {
-			System.out.println(s.getArtist()+" - "+s.getTitle()+" - "+s.calcolaIndice(popularity+energy+danceability)+" - "+s.getDur()/60+" min e "+s.getDur()%60+" sec");
-		}
 		
 		best = new HashSet<>();
 		Set<Song> parziale = new HashSet<>();
@@ -70,20 +67,29 @@ public class Model {
 		int affinitaTot = 0;
 		
 		if(durata<0)
-			return best;
+			return parziale;
+		
+		if (durata<4) {
+			return parziale;
+		}
 		
 		double indice = popularity + energy + danceability;
 		
 		cerca(parziale, durata, listaCanzoniAffini, indice, sommaDurata, affinitaTot);
 		
+		int durataCanzoniAffini = 0;
+		for(Song s : listaCanzoniAffini) {
+			durataCanzoniAffini += s.getDur();
+		}
+		
 		if(best.isEmpty()) {
-			return listaCanzoniAffini;
+			if(durata>(durataCanzoniAffini + 180))
+				return listaCanzoniAffini;
 		}
 		
 		long end = System.currentTimeMillis();
 		
 		System.out.println("Durata: "+(int)(end-start)/1000+" s");
-		
 		
 		return best;
 		
@@ -104,7 +110,6 @@ public class Model {
 				return;
 			}
 				for(Song song : lista) {
-					//System.out.println(sommaDurata);
 					if (!parziale.contains(song)) {
 						parziale.add(song);
 						if(aggiuntaValida(parziale)) {
@@ -119,10 +124,7 @@ public class Model {
 						else {
 							parziale.remove(song);
 						}
-						
-						
 					}
-					
 				}
 		}
 	
