@@ -109,6 +109,7 @@ public class Model {
 				}
 				return;
 			}
+			
 				for(Song song : lista) {
 					if (!parziale.contains(song)) {
 						parziale.add(song);
