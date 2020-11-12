@@ -20,7 +20,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import provafinale.database.SpotifyDAO;
 import provafinale.model.Genre;
 import provafinale.model.Model;
 import provafinale.model.Song;
@@ -28,7 +27,6 @@ import provafinale.model.Song;
 public class SpotifyController {
 	
 	Model model;
-	SpotifyDAO dao;
 	
 	ObservableList<Integer> anni;
 	List<String> artistiGrafico;
@@ -170,14 +168,14 @@ public class SpotifyController {
     	}
     	else if(!artista.equals("") && genere==null) {
     		if(anno!=0) {
-    			canzoni = dao.getAllYearArtistSongs(artista, anno);
+    			canzoni = model.getAllYearArtistSongs(artista, anno);
     			yearsBarChart.getData().clear();
     			genresPieChart.getData().clear();
     			txtYearPieChart.setText("");
     			yearsBarChart.setVisible(false);
     		}
     		else {
-    			canzoni = dao.getAllArtistSongs(artista);
+    			canzoni = model.getAllArtistSongs(artista);
     			disegnaBarChartArtista(canzoni, artista);
     			genresPieChart.getData().clear();
     			txtYearPieChart.setText("");
@@ -196,13 +194,13 @@ public class SpotifyController {
     	
     	else if (artista.equals("") && genere!=null) {
     		if(anno!=0) {
-    			canzoni = dao.getAllYearGenreSongs(genere, anno);
+    			canzoni = model.getAllYearGenreSongs(genere, anno);
     			yearsBarChart.getData().clear();
     			genresPieChart.getData().clear();
     			txtYearPieChart.setText("");
     			yearsBarChart.setVisible(false);
     		} else {
-    			canzoni = dao.getAllGenreSongs(genere);
+    			canzoni = model.getAllGenreSongs(genere);
     			disegnaBarChartGenere(canzoni, genere);
     			genresPieChart.getData().clear();
     			txtYearPieChart.setText("");
@@ -216,7 +214,7 @@ public class SpotifyController {
     		}
     		txtAreaRicerca.setText(txtAreaRicerca.getText().substring(0, txtAreaRicerca.getText().length()-1));
     	} else if(artista.equals("") && genere == null && anno!=0) {
-    		canzoni = dao.getAllYearSongs(anno);
+    		canzoni = model.getAllYearSongs(anno);
     		disegnaPieChart(canzoni, anno);
     		yearsBarChart.getData().clear();
     		for(Song s : canzoni) {
@@ -271,7 +269,7 @@ public class SpotifyController {
         		}
     		
     	for(Song s : canzoni) {
-    		series.getData().add(new XYChart.Data<String, Integer>(s.getYear()+"", dao.getAllYearArtistSongs(s.getArtist(), s.getYear()).size()));
+    		series.getData().add(new XYChart.Data<String, Integer>(s.getYear()+"", model.getAllYearArtistSongs(s.getArtist(), s.getYear()).size()));
     		}
     	
     	 yearsBarChart.getData().addAll(series);
@@ -304,7 +302,7 @@ public class SpotifyController {
         		}
     		
     	for(Song s : canzoni) {
-    		series.getData().add(new XYChart.Data<String, Integer>(s.getYear()+"", dao.getAllYearGenreSongs(s.getTopGenre(), s.getYear()).size()));
+    		series.getData().add(new XYChart.Data<String, Integer>(s.getYear()+"", model.getAllYearGenreSongs(s.getTopGenre(), s.getYear()).size()));
     		}
     	
     	 yearsBarChart.getData().addAll(series);
@@ -459,7 +457,7 @@ public class SpotifyController {
     	choiceBoxCanzone.setDisable(false);
     	btnAggiungi.setDisable(false);
     	ObservableList<Song> canzoni = FXCollections.observableArrayList();
-    	canzoni.addAll(dao.getAllArtistSongs(artista));
+    	canzoni.addAll(model.getAllArtistSongs(artista));
     	choiceBoxCanzone.setItems(canzoni);
     }
 	
@@ -553,19 +551,18 @@ public class SpotifyController {
     	sliderEnergy.setValue(50);
     	sliderDanceability.setValue(50);
         
-        dao = new SpotifyDAO();
         model = new Model();
         ObservableList<String> generi = FXCollections.observableArrayList();
         anni = FXCollections.observableArrayList();
-        generi.addAll(dao.getAllGenres());
-        anni.addAll(dao.getAllYears());
+        generi.addAll(model.getAllGenres());
+        anni.addAll(model.getAllYears());
         Collections.sort(generi);
         Collections.sort(anni);
         choiceBoxGenere.setItems(generi);
         choiceBoxAnno.setItems(anni);
         
         ObservableList<String> artisti = FXCollections.observableArrayList();
-        artisti.addAll(dao.getAllArtists());
+        artisti.addAll(model.getAllArtists());
         choiceBoxArtista.setItems(artisti);
         
         artistiGrafico = new ArrayList<>();

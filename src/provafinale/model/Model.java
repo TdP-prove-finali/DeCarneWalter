@@ -49,16 +49,20 @@ public class Model {
 		
 		List<Song> canzoniEstratte = new ArrayList<>(dao.getCanzoniAffini(durata, popularity, energy, danceability));
 		Set<Song> listaCanzoniAffini = new HashSet<>();
+				
+		double indice = popularity + energy + danceability;
 		
-		System.out.println("Num canzoni prima: "+canzoniEstratte.size());
+		for(Song s : canzoniEstratte) {
+			s.setIndicePlaylist(indice);
+			s.setAffinita();
+		}
+		Collections.sort(canzoniEstratte);
 		
 		if (canzoniEstratte.size()>20) {
 			listaCanzoniAffini.addAll(canzoniEstratte.subList(0, 20));
 		} else {
 			listaCanzoniAffini.addAll(canzoniEstratte);
 		}
-		
-		System.out.println("Num canzoni: "+listaCanzoniAffini.size());
 		
 		best = new HashSet<>();
 		Set<Song> parziale = new HashSet<>();
@@ -72,8 +76,6 @@ public class Model {
 		if (durata<4) {
 			return parziale;
 		}
-		
-		double indice = popularity + energy + danceability;
 		
 		cerca(parziale, durata, listaCanzoniAffini, indice, sommaDurata, affinitaTot);
 		
@@ -176,6 +178,38 @@ public class Model {
 		
 		return generiFinali;
 		
+	}
+	
+	public List<String> getAllGenres(){
+		return dao.getAllGenres();
+	}
+	
+	public List<Integer> getAllYears(){
+		return dao.getAllYears();
+	}
+	
+	public List<String> getAllArtists(){
+		return dao.getAllArtists();
+	}
+	
+	public List<Song> getAllYearArtistSongs(String artista, int anno){
+		return dao.getAllYearArtistSongs(artista, anno);
+	}
+	
+	public List<Song> getAllArtistSongs(String artista){
+		return dao.getAllArtistSongs(artista);
+	}
+	
+	public List<Song> getAllYearGenreSongs(String genere, int anno){
+		return dao.getAllYearGenreSongs(genere, anno);
+	}
+	
+	public List<Song> getAllGenreSongs(String genere){
+		return dao.getAllGenreSongs(genere);
+	}
+	
+	public List<Song> getAllYearSongs(int anno){
+		return dao.getAllYearSongs(anno);
 	}
 
 	

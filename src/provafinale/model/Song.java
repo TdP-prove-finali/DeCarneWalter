@@ -1,6 +1,6 @@
 package provafinale.model;
 
-public class Song{
+public class Song implements Comparable<Song>{
 	
 	int id;
 	String title; 
@@ -17,6 +17,9 @@ public class Song{
 	int acous; 
 	int spch; 
 	int pop;
+	
+	double indicePlaylist;
+	double affinita;
 	
 	public Song(int id, String title, String artist, String topGenre, int year, int bpm, int nrgy, int dnce, int dB,
 			int live, int val, int dur, int acous, int spch, int pop) {
@@ -36,6 +39,8 @@ public class Song{
 		this.acous = acous;
 		this.spch = spch;
 		this.pop = pop;
+		indicePlaylist = 0.0;
+		affinita = 0.0;
 	}
 
 	public int getId() {
@@ -98,16 +103,28 @@ public class Song{
 		return pop;
 	}
 
-	public int getAffinita() {
-		int affinita = nrgy + dnce + pop;
+	public double getAffinita() {
 		return affinita;
 	}
 	
-	public double calcolaIndice(double indiceInserito) {
-		double indiceCanzone = this.pop+this.nrgy+this.dnce;
-		double index = Math.abs(indiceInserito - indiceCanzone);
-		return Math.round(index * 100.0) / 100.0;
+	public void setAffinita() {
+		this.affinita = calcolaIndice(this.getIndicePlaylist());
 	}
+	
+	public double getIndicePlaylist() {
+		return indicePlaylist;
+	}
+	
+	public void setIndicePlaylist(double indicePlaylist) {
+		this.indicePlaylist = indicePlaylist;
+	}
+
+	public double calcolaIndice(double indicePlaylist) {
+		double indiceCanzone = this.pop+this.nrgy+this.dnce;
+		double index = Math.abs(indicePlaylist - indiceCanzone);
+		return index;
+	}
+
 
 	@Override
 	public String toString() {
@@ -143,5 +160,10 @@ public class Song{
 		} else if (!title.equals(other.title))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Song altra) {
+		return (int) (this.affinita-altra.getAffinita());
 	}
 }

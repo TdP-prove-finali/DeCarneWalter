@@ -138,7 +138,7 @@ public class SpotifyDAO {
 	}
 
 	public List<Song> getAllYearArtistSongs(String artist, int year) {
-final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ? AND year = ? GROUP BY title";
+		final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ? AND year = ? GROUP BY title";
 		
 		List<Song> songs = new ArrayList<>();
 		
@@ -151,8 +151,11 @@ final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ? AND year = ? 
 			ResultSet rs = st.executeQuery();
 
 			while (rs.next()) {
-				Song s = new Song (rs.getInt("id"), rs.getString("title"), rs.getString("artist"), rs.getString("top_genre"), rs.getInt("year"),  rs.getInt("bpm"), rs.getInt("nrgy"), rs.getInt("dnce"), rs.getInt("dB"),
-						rs.getInt("live"), rs.getInt("val"), rs.getInt("dur"), rs.getInt("acous"), rs.getInt("spch"), rs.getInt("pop"));
+				Song s = new Song (rs.getInt("id"), rs.getString("title"), rs.getString("artist"), 
+						rs.getString("top_genre"), rs.getInt("year"),  rs.getInt("bpm"), 
+						rs.getInt("nrgy"), rs.getInt("dnce"), rs.getInt("dB"),
+						rs.getInt("live"), rs.getInt("val"), rs.getInt("dur"), rs.getInt("acous"),
+						rs.getInt("spch"), rs.getInt("pop"));
 				songs.add(s);
 			}
 			conn.close();
@@ -244,8 +247,10 @@ final String sql = "SELECT DISTINCT * FROM top10s WHERE artist = ? AND year = ? 
 			ResultSet rs = st.executeQuery();
 
 			while (rs.next()) {
-				Song s = new Song (rs.getInt("id"), rs.getString("title"), rs.getString("artist"), rs.getString("top_genre"), rs.getInt("year"),  rs.getInt("bpm"), rs.getInt("nrgy"), rs.getInt("dnce"), rs.getInt("dB"),
-						rs.getInt("live"), rs.getInt("val"), rs.getInt("dur"), rs.getInt("acous"), rs.getInt("spch"), rs.getInt("pop"));
+				Song s = new Song (rs.getInt("id"), rs.getString("title"), rs.getString("artist"), 
+						rs.getString("top_genre"),rs.getInt("year"),  rs.getInt("bpm"), rs.getInt("nrgy"),
+						rs.getInt("dnce"), rs.getInt("dB"), rs.getInt("live"), rs.getInt("val"), rs.getInt("dur"),
+						rs.getInt("acous"), rs.getInt("spch"), rs.getInt("pop"));
 				canzoniAffini.add(s);
 			}
 			conn.close();
