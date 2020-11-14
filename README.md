@@ -6,4 +6,4 @@
 3. Caricare il file top10s.sql sul proprio database MySQL;
 4. Modificare, all'interno della classe DBConnect, contenuta nel package db, la password di accesso al database, inserendo la propria;
 5. Visionare la guida all'utilizzo: https://youtu.be/fIzCuRuCNtk;
-6. Eseguire la classe "Main" per avviare l'applicazione;
+6. Eseguire la classe "Main" per avviare l'applicazione.
