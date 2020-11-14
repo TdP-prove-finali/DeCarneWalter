@@ -28,12 +28,12 @@ public class SpotifyController {
 	
 	Model model;
 	
-	ObservableList<Integer> anni;
-	List<String> artistiGrafico;
-	List<String> generiGrafico;
+	private ObservableList<Integer> anni;
+	private List<String> artistiGrafico;
+	private List<String> generiGrafico;
 	int contatoreGrafico;
 	
-	List<Song> canzoniAggiunteManualmente;
+	private List<Song> canzoniAggiunteManualmente;
 
     @FXML
     private Tab tabRicerca;
@@ -390,7 +390,9 @@ public class SpotifyController {
     		txtAreaGenera.appendText("\nSono stati rimossi "+duplicati+" duplicati\n");
     	}
     	
-    	txtAreaGenera.setText(txtAreaGenera.getText().substring(0, txtAreaGenera.getText().length()-1));
+    	if(!txtAreaGenera.getText().isEmpty())
+    		txtAreaGenera.setText(txtAreaGenera.getText().substring(0, txtAreaGenera.getText().length()-1));
+    	
     	disegnaPieChartPlaylist(playlistFinale);
     	
     	int min = dur/60;
@@ -507,7 +509,8 @@ public class SpotifyController {
     		txtAreaGenera.appendText(s.getArtist()+" - "+s.getTitle()+"\n");
     	}
     	
-    	txtAreaGenera.setText(txtAreaGenera.getText().substring(0, txtAreaGenera.getText().length()-1));
+    	if(!txtAreaGenera.getText().isEmpty())
+    		txtAreaGenera.setText(txtAreaGenera.getText().substring(0, txtAreaGenera.getText().length()-1));
     	
     	txtDurataPlaylist.setText(durata/60+" minuti e "+durata%60+" secondi");
     	txtNumeroCanzoni.setText(canzoniAggiunteManualmente.size()+"");

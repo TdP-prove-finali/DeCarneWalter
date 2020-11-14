@@ -15,8 +15,8 @@ public class Model {
 	int affinitaMin;
 	SpotifyDAO dao = new SpotifyDAO();
 	
-	Set<Song> best = new HashSet<>();
-	Set<Set<Song>> parzialeGiaAnalizzato = new HashSet<>();
+	private Set<Song> best = new HashSet<>();
+	private Set<Set<Song>> parzialeGiaAnalizzato = new HashSet<>();
 	
 	public Song canzonePiuPopolare (List<Song> canzoni) {
 		int maxPop = 0;
