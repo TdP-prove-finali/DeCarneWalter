@@ -102,8 +102,8 @@ public class Model {
 		
 			//caso terminale
 			if (sommaDurata>=(durata)-180 && sommaDurata<=(durata)+180) {
-				if(affinitaTot<affinitaMin) {
-					affinitaMin = affinitaTot;
+				if(affinitaTot/parziale.size()<affinitaMin) {
+					affinitaMin = affinitaTot/parziale.size();
 					affinitaTot = 0;
 					sommaDurata = 0;
 					this.best.clear();
