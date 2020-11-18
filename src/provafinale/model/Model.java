@@ -102,13 +102,16 @@ public class Model {
 		
 			//caso terminale
 			if (sommaDurata>=(durata)-180 && sommaDurata<=(durata)+180) {
-				if(affinitaTot/parziale.size()<affinitaMin) {
-					affinitaMin = affinitaTot/parziale.size();
-					affinitaTot = 0;
-					sommaDurata = 0;
-					this.best.clear();
-					this.best.addAll(parziale);
+				if(!parziale.isEmpty()) {
+					if(affinitaTot/parziale.size()<affinitaMin) {
+						affinitaMin = affinitaTot/parziale.size();
+						affinitaTot = 0;
+						sommaDurata = 0;
+						this.best.clear();
+						this.best.addAll(parziale);
+					}
 				}
+				
 				return;
 			}
 			
