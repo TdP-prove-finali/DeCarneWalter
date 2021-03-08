@@ -1,0 +1,95 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.tab-header-background {
+    -fx-background-color:  #191414;
+}
+
+.tab-label {
+-fx-text-fill: #191414;
+-fx-font-weight: bold;
+
+}
+
+.tab{
+-fx-background-color:   #1db954;
+-fx-font-family: "American Typewriter";
+-fx-font-size: 14px;
+}
+
+.text-area .content {
+    -fx-background-color:  #191414 ;
+}
+
+.text-area   {
+    -fx-text-fill: white;
+    -fx-font-family: "American Typewriter";
+    -fx-border-color: #191414;
+}
+
+.text-field {
+	-fx-font-family: "American Typewriter";
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical{
+    -fx-background-color:#191414;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: #191414;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #1db954;
+    -fx-background-radius: 5em;
+}
+
+.increment-button, .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.chart-legend-item{
+	-fx-font-family: "American Typewriter";
+}
+
+.chart-legend{
+	-fx-background-color: white;
+}
+
+.chart-title{
+	-fx-text-fill: #191414;
+}
+
+.chart-plot-background {
+	-fx-background-color: #191414;
+}
+
+.chart-pie-title{
+	 -fx-fill: #1db954;
+}
+
+.choice-box .menu-item{
+	-fx-font-family: "American Typewriter";
+}
+
+.choice-box > .label{
+	-fx-font-family: "American Typewriter";
+}
+
+.default-color0.chart-pie { -fx-pie-color: #00bfff; }
+.default-color1.chart-pie { -fx-pie-color: #ff1e00; }
+.default-color2.chart-pie { -fx-pie-color: #4dd313; }
+.default-color3.chart-pie { -fx-pie-color: #ffe000; }
+.default-color4.chart-pie { -fx-pie-color: #ff7800; }
+.default-color5.chart-pie {-fx-pie-color: #b500ff;}
+.default-color6.chart-pie { -fx-pie-color: #1c139a; }
+.default-color7.chart-pie { -fx-pie-color: #969494; }
+.default-color8.chart-pie {-fx-pie-color: #f489c0;}
+.default-color9.chart-pie { -fx-pie-color: #57e7bc; }
+.default-color10.chart-pie {-fx-pie-color: #9d4018;}
+.default-color11.chart-pie { -fx-pie-color: #ffffff; }
+
+
+
+ 
